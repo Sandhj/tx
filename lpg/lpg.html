@@ -1,0 +1,873 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Sistem LPG</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.sheetjs.com/xlsx-0.20.1/package/dist/xlsx.full.min.js"></script>
+    <style>
+        :root {
+            --primary: #4f46e5; --primary-light: #818cf8; --primary-dark: #3730a3;
+            --success: #10b981; --danger: #ef4444; --warning: #f59e0b;
+            --bg: #f8fafc; --card: #ffffff; --text: #0f172a;
+            --text-muted: #64748b; --border: #e2e8f0;
+            --radius: 14px;
+            --shadow: 0 1px 3px rgba(0,0,0,0.04), 0 4px 12px rgba(0,0,0,0.04);
+        }
+        * { box-sizing: border-box; }
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: var(--bg); color: var(--text);
+            margin: 0; padding: 24px; line-height: 1.6; font-size: 15px;
+            -webkit-font-smoothing: antialiased;
+        }
+        .container { max-width: 1100px; margin: 0 auto; }
+
+        /* TOP BAR */
+        .topbar {
+            display: flex; justify-content: space-between; align-items: center;
+            background: var(--card); padding: 14px 20px;
+            border-radius: var(--radius); box-shadow: var(--shadow);
+            border: 1px solid var(--border); margin-bottom: 24px;
+            flex-wrap: wrap; gap: 12px;
+        }
+        .topbar-left { display: flex; align-items: center; gap: 12px; }
+        .topbar-left h1 {
+            font-size: 1.15rem; font-weight: 800; margin: 0;
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+        }
+        .user-badge {
+            display: flex; align-items: center; gap: 8px;
+            padding: 6px 12px; background: #f1f5f9;
+            border-radius: 20px; font-size: 0.85rem; font-weight: 600;
+        }
+        .user-badge .avatar {
+            width: 28px; height: 28px; border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            color: white; display: flex; align-items: center; justify-content: center;
+            font-size: 0.75rem; font-weight: 700;
+        }
+        .role-tag {
+            font-size: 0.7rem; padding: 2px 8px; border-radius: 10px;
+            font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;
+        }
+        .role-admin { background: #fef3c7; color: #92400e; }
+        .role-pegawai { background: #dbeafe; color: #1e40af; }
+        .topbar-right { display: flex; gap: 8px; flex-wrap: wrap; }
+
+        /* CARD */
+        .card {
+            background: var(--card); padding: 24px;
+            border-radius: var(--radius); box-shadow: var(--shadow);
+            margin-bottom: 20px; border: 1px solid var(--border);
+        }
+        .card-title {
+            font-size: 1.1rem; font-weight: 700;
+            margin: 0 0 20px 0; display: flex; align-items: center; gap: 8px;
+        }
+        .card-title::before {
+            content: ''; width: 4px; height: 20px;
+            background: linear-gradient(180deg, var(--primary), var(--primary-light));
+            border-radius: 2px;
+        }
+
+        /* FORM */
+        .form-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 16px; align-items: end;
+        }
+        .form-group { display: flex; flex-direction: column; }
+        label {
+            font-weight: 600; margin-bottom: 6px; font-size: 0.8rem;
+            color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px;
+        }
+        input, select {
+            padding: 11px 14px; border: 1.5px solid var(--border);
+            border-radius: 10px; font-size: 0.95rem; font-family: inherit;
+            font-weight: 500; color: var(--text); background: var(--card);
+            transition: all 0.2s;
+        }
+        input:focus, select:focus {
+            outline: none; border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.1);
+        }
+        input[readonly] {
+            background: #f1f5f9; color: var(--primary-dark);
+            font-weight: 700; cursor: default;
+        }
+
+        /* BUTTONS */
+        button {
+            padding: 11px 18px; border: none; border-radius: 10px;
+            font-size: 0.9rem; font-weight: 600; font-family: inherit;
+            cursor: pointer; transition: all 0.2s;
+            display: inline-flex; align-items: center; gap: 6px;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            color: white; width: 100%; margin-top: 16px; justify-content: center;
+            box-shadow: 0 4px 12px rgba(79, 70, 229, 0.25);
+        }
+        .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 6px 16px rgba(79, 70, 229, 0.35); }
+        .btn-secondary { background: #f1f5f9; color: var(--text); }
+        .btn-secondary:hover { background: #e2e8f0; }
+        .btn-success {
+            background: linear-gradient(135deg, #10b981, #34d399);
+            color: white; box-shadow: 0 4px 12px rgba(16, 185, 129, 0.25);
+        }
+        .btn-success:hover { transform: translateY(-1px); }
+        .btn-warning {
+            background: linear-gradient(135deg, #f59e0b, #fbbf24);
+            color: white; box-shadow: 0 4px 12px rgba(245, 158, 11, 0.25);
+        }
+        .btn-warning:hover { transform: translateY(-1px); }
+        .btn-info {
+            background: linear-gradient(135deg, #0ea5e9, #38bdf8);
+            color: white; box-shadow: 0 4px 12px rgba(14, 165, 233, 0.25);
+        }
+        .btn-info:hover { transform: translateY(-1px); }
+        .btn-danger {
+            background: #fee2e2; color: var(--danger);
+            padding: 6px 12px; font-size: 0.8rem;
+        }
+        .btn-danger:hover { background: #fecaca; }
+        .btn-reset {
+            background: #fee2e2; color: var(--danger);
+            font-size: 0.85rem; padding: 8px 14px;
+        }
+        .btn-reset:hover { background: #fecaca; }
+
+        /* SUMMARY */
+        .summary-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 14px;
+        }
+        .summary-item {
+            background: linear-gradient(135deg, #f8fafc, #f1f5f9);
+            padding: 18px; border-radius: 12px;
+            border: 1px solid var(--border); position: relative; overflow: hidden;
+        }
+        .summary-item::before {
+            content: ''; position: absolute; left: 0; top: 0; bottom: 0;
+            width: 4px; background: var(--primary);
+        }
+        .summary-item.income::before { background: var(--success); }
+        .summary-item.modal::before  { background: var(--danger); }
+        .summary-item.profit::before { background: var(--warning); }
+        .summary-item h3 {
+            margin: 0 0 6px 0; font-size: 0.75rem;
+            color: var(--text-muted); text-transform: uppercase;
+            letter-spacing: 0.5px; font-weight: 600;
+        }
+        .summary-item p {
+            margin: 0; font-size: 1.35rem; font-weight: 800; letter-spacing: -0.5px;
+        }
+
+        /* FILTER */
+        .filter-bar {
+            display: flex; gap: 12px; flex-wrap: wrap; align-items: end;
+            margin-bottom: 20px; padding: 16px;
+            background: #f8fafc; border-radius: 12px;
+            border: 1px dashed var(--border);
+        }
+        .filter-bar .form-group { flex: 1; min-width: 150px; }
+        .filter-bar label { font-size: 0.75rem; }
+        .date-range { display: none; gap: 10px; flex-wrap: wrap; }
+        .date-range.active { display: flex; }
+        .date-range .form-group { flex: 1; min-width: 140px; }
+
+        /* TABLE */
+        .table-container {
+            overflow-x: auto; border-radius: 10px; border: 1px solid var(--border);
+        }
+        table { width: 100%; border-collapse: collapse; }
+        th, td {
+            padding: 13px 16px; text-align: left;
+            border-bottom: 1px solid var(--border); font-size: 0.9rem;
+        }
+        th {
+            background: #f8fafc; font-weight: 600; color: var(--text-muted);
+            font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.5px;
+        }
+        tbody tr { transition: background 0.15s; }
+        tbody tr:hover { background: #f8fafc; }
+        tbody tr:last-child td { border-bottom: none; }
+        .badge {
+            padding: 4px 10px; border-radius: 20px;
+            font-size: 0.75rem; font-weight: 600; display: inline-block;
+        }
+        .badge-beli { background: #fee2e2; color: #991b1b; }
+        .badge-jual { background: #dcfce7; color: #166534; }
+        .text-right  { text-align: right; }
+        .text-center { text-align: center; }
+        .empty-state { text-align: center; padding: 40px 20px; color: var(--text-muted); }
+
+        /* TOAST */
+        .toast {
+            position: fixed; top: 20px; right: 20px;
+            padding: 14px 20px; border-radius: 10px;
+            background: var(--card); box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            border-left: 4px solid var(--success);
+            font-weight: 600; font-size: 0.9rem;
+            transform: translateX(400px); transition: transform 0.3s;
+            z-index: 2000; max-width: 350px;
+        }
+        .toast.show { transform: translateX(0); }
+        .toast.error { border-left-color: var(--danger); }
+
+        /* MODAL */
+        .modal-overlay {
+            display: none; position: fixed; inset: 0;
+            background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(4px);
+            z-index: 1000; align-items: center; justify-content: center; padding: 20px;
+        }
+        .modal-overlay.active { display: flex; }
+        .modal {
+            background: var(--card); border-radius: var(--radius);
+            max-width: 600px; width: 100%; max-height: 90vh; overflow-y: auto;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        .modal-header {
+            padding: 20px 24px; border-bottom: 1px solid var(--border);
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        .modal-header h2 { margin: 0; font-size: 1.15rem; font-weight: 700; }
+        .modal-close {
+            background: #f1f5f9; border: none; width: 32px; height: 32px;
+            border-radius: 8px; cursor: pointer; font-size: 1.1rem; padding: 0;
+        }
+        .modal-body { padding: 24px; }
+        .user-list { list-style: none; padding: 0; margin: 0 0 20px 0; }
+        .user-list li {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 12px 14px; background: #f8fafc;
+            border-radius: 10px; margin-bottom: 8px; border: 1px solid var(--border);
+        }
+        .user-info strong { display: block; font-size: 0.95rem; }
+        .user-info small { color: var(--text-muted); font-size: 0.8rem; }
+
+        @media (max-width: 640px) {
+            body { padding: 16px; }
+            .card { padding: 18px; }
+            .summary-item p { font-size: 1.15rem; }
+            th, td { padding: 10px 12px; font-size: 0.85rem; }
+            .topbar { flex-direction: column; align-items: stretch; }
+            .topbar-right { justify-content: stretch; }
+            .topbar-right button { flex: 1; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+
+    <!-- TOP BAR -->
+    <div class="topbar">
+        <div class="topbar-left">
+            <h1>📊 Dashboard LPG</h1>
+            <div class="user-badge">
+                <div class="avatar" id="userAvatar">A</div>
+                <div>
+                    <div id="userName" style="font-size:0.85rem;">Loading...</div>
+                    <span class="role-tag" id="userRole">-</span>
+                </div>
+            </div>
+        </div>
+        <div class="topbar-right">
+            <button class="btn-info admin-only" onclick="backupNow()">📱 Backup Sekarang</button>
+            <button class="btn-warning admin-only" id="btnKelolaPegawai" onclick="openUserModal()" style="display:none;">
+                👥 Pegawai
+            </button>
+            <button class="btn-secondary" onclick="logout()">🚪 Logout</button>
+        </div>
+    </div>
+
+    <!-- FORM INPUT -->
+    <div class="card">
+        <h2 class="card-title">Tambah Transaksi</h2>
+        <form id="formTransaksi">
+            <div class="form-grid">
+                <div class="form-group">
+                    <label for="tanggal">Tanggal</label>
+                    <input type="date" id="tanggal" required>
+                </div>
+                <div class="form-group">
+                    <label for="jenis">Jenis Transaksi</label>
+                    <select id="jenis" required>
+                        <option value="Pembelian">Pembelian (Refill)</option>
+                        <option value="Penjualan">Penjualan (Terjual)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="jumlahTabung">Jumlah Tabung</label>
+                    <input type="text" id="jumlahTabung" inputmode="numeric" placeholder="0" required>
+                </div>
+                <div class="form-group">
+                    <label for="hargaPerPcs">Harga /pcs (Rp)</label>
+                    <input type="text" id="hargaPerPcs" inputmode="numeric" placeholder="0" required>
+                </div>
+                <div class="form-group">
+                    <label for="totalNilai">Total Nilai (Rp)</label>
+                    <input type="text" id="totalNilai" readonly value="0">
+                </div>
+            </div>
+            <button type="submit" class="btn-primary">💾 Simpan Transaksi</button>
+        </form>
+    </div>
+
+    <!-- RINGKASAN -->
+    <div class="card">
+        <h2 class="card-title">Ringkasan</h2>
+        <div class="summary-grid">
+            <div class="summary-item modal">
+                <h3>Total Modal</h3>
+                <p id="sumModal">Rp 0</p>
+            </div>
+            <div class="summary-item income">
+                <h3>Total Income</h3>
+                <p id="sumIncome">Rp 0</p>
+            </div>
+            <div class="summary-item profit">
+                <h3>Selisih (Income − Modal)</h3>
+                <p id="sumProfit">Rp 0</p>
+            </div>
+            <div class="summary-item">
+                <h3>Tabung Refill</h3>
+                <p id="sumRefill">0</p>
+            </div>
+            <div class="summary-item">
+                <h3>Tabung Terjual</h3>
+                <p id="sumTerjual">0</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- TABEL RIWAYAT -->
+    <div class="card">
+        <h2 class="card-title">Riwayat Transaksi</h2>
+
+        <div class="filter-bar">
+            <div class="form-group">
+                <label for="filterPeriode">Periode</label>
+                <select id="filterPeriode">
+                    <option value="all">Semua Data</option>
+                    <option value="today">Hari Ini</option>
+                    <option value="week">Minggu Ini</option>
+                    <option value="month">Bulan Ini</option>
+                    <option value="year">Tahun Ini</option>
+                    <option value="custom">Rentang Tanggal</option>
+                </select>
+            </div>
+            <div class="date-range" id="dateRange">
+                <div class="form-group">
+                    <label for="dateFrom">Dari Tanggal</label>
+                    <input type="date" id="dateFrom">
+                </div>
+                <div class="form-group">
+                    <label for="dateTo">Sampai Tanggal</label>
+                    <input type="date" id="dateTo">
+                </div>
+            </div>
+            <button type="button" class="btn-success" onclick="exportToExcel()">📊 Export Excel</button>
+            <button type="button" class="btn-reset admin-only" onclick="resetData()">🗑️ Reset Data</button>
+        </div>
+
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th class="text-center" style="width:50px;">No</th>
+                        <th>Tanggal</th>
+                        <th class="text-center">Jenis</th>
+                        <th class="text-center">Jumlah</th>
+                        <th class="text-right">Harga /pcs</th>
+                        <th class="text-right">Total</th>
+                        <th class="text-center admin-only" style="width:90px;">Aksi</th>
+                    </tr>
+                </thead>
+                <tbody id="tableBody"></tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<!-- MODAL KELOLA PEGAWAI -->
+<div class="modal-overlay" id="userModal">
+    <div class="modal">
+        <div class="modal-header">
+            <h2>👥 Kelola Pegawai</h2>
+            <button class="modal-close" onclick="closeUserModal()">✕</button>
+        </div>
+        <div class="modal-body">
+            <h3 style="margin:0 0 12px 0; font-size:0.95rem;">Daftar Pegawai</h3>
+            <ul class="user-list" id="userList">
+                <li style="justify-content:center; color:var(--text-muted);">Memuat...</li>
+            </ul>
+
+            <h3 style="margin:20px 0 12px 0; font-size:0.95rem;">Tambah Pegawai Baru</h3>
+            <form id="formUser" style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+                <div class="form-group">
+                    <label for="newUsername">Username</label>
+                    <input type="text" id="newUsername" placeholder="contoh: budi" required>
+                </div>
+                <div class="form-group">
+                    <label for="newNama">Nama Lengkap</label>
+                    <input type="text" id="newNama" placeholder="contoh: Budi Santoso">
+                </div>
+                <div class="form-group">
+                    <label for="newPassword">Password</label>
+                    <input type="text" id="newPassword" placeholder="min. 4 karakter" required>
+                </div>
+                <div class="form-group" style="justify-content:end;">
+                    <button type="submit" class="btn-primary" style="margin-top:0;">➕ Tambah</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    // ========== STATE ==========
+    let transaksi = [];
+    let currentUser = null;
+
+    // ========== INIT ==========
+    document.getElementById('tanggal').valueAsDate = new Date();
+    checkAuth();
+
+    async function checkAuth() {
+        try {
+            const res = await fetch('/api/me');
+            if (!res.ok) { window.location.href = '/login'; return; }
+            currentUser = await res.json();
+            setupUI();
+            loadTransaksi();
+        } catch (err) {
+            window.location.href = '/login';
+        }
+    }
+
+    function setupUI() {
+        document.getElementById('userName').textContent = currentUser.nama;
+        const roleTag = document.getElementById('userRole');
+        roleTag.textContent = currentUser.role;
+        roleTag.className = 'role-tag ' + (currentUser.role === 'admin' ? 'role-admin' : 'role-pegawai');
+        document.getElementById('userAvatar').textContent = currentUser.nama.charAt(0).toUpperCase();
+
+        const isAdmin = currentUser.role === 'admin';
+        document.getElementById('btnKelolaPegawai').style.display = isAdmin ? 'inline-flex' : 'none';
+        document.querySelectorAll('.admin-only').forEach(el => {
+            el.style.display = isAdmin ? 'inline-flex' : 'none';
+        });
+    }
+
+    // ========== TOAST ==========
+    function showToast(msg, isError = false) {
+        const toast = document.getElementById('toast');
+        toast.textContent = msg;
+        toast.className = 'toast show' + (isError ? ' error' : '');
+        setTimeout(() => toast.classList.remove('show'), 3000);
+    }
+
+    // ========== LOAD DATA DARI DATABASE JSON ==========
+    async function loadTransaksi() {
+        try {
+            const res = await fetch('/api/transaksi');
+            if (!res.ok) throw new Error('Gagal memuat data');
+            transaksi = await res.json();
+            renderTabel();
+            hitungRingkasan();
+        } catch (err) {
+            showToast('❌ Gagal memuat data: ' + err.message, true);
+        }
+    }
+
+    // ========== FORMAT ==========
+    function formatAngkaInput(value) {
+        const num = String(value).replace(/\D/g, '');
+        if (!num) return '';
+        return num.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+    }
+    function parseAngkaInput(value) {
+        return parseInt(String(value).replace(/\./g, '')) || 0;
+    }
+    function formatRupiah(angka) {
+        if (!angka && angka !== 0) return 'Rp 0';
+        return 'Rp ' + formatAngkaInput(angka);
+    }
+    function formatTanggal(tgl) {
+        const [y, m, d] = tgl.split('-');
+        return `${d}/${m}/${y}`;
+    }
+
+    // ========== INPUT NUMBER ==========
+    const inputJumlah = document.getElementById('jumlahTabung');
+    const inputHarga  = document.getElementById('hargaPerPcs');
+    const inputTotal  = document.getElementById('totalNilai');
+
+    function setupNumberInput(input) {
+        input.addEventListener('input', function() {
+            const pos = this.selectionStart;
+            const oldLen = this.value.length;
+            this.value = formatAngkaInput(this.value);
+            const newLen = this.value.length;
+            this.setSelectionRange(pos + (newLen - oldLen), pos + (newLen - oldLen));
+            hitungTotalOtomatis();
+        });
+    }
+    setupNumberInput(inputJumlah);
+    setupNumberInput(inputHarga);
+
+    function hitungTotalOtomatis() {
+        const jumlah = parseAngkaInput(inputJumlah.value);
+        const harga  = parseAngkaInput(inputHarga.value);
+        inputTotal.value = formatAngkaInput(jumlah * harga);
+    }
+
+    // ========== FILTER ==========
+    const filterPeriode = document.getElementById('filterPeriode');
+    const dateRange = document.getElementById('dateRange');
+    const dateFrom = document.getElementById('dateFrom');
+    const dateTo = document.getElementById('dateTo');
+
+    filterPeriode.addEventListener('change', function() {
+        dateRange.classList.toggle('active', this.value === 'custom');
+        renderTabel();
+        hitungRingkasan();
+    });
+    dateFrom.addEventListener('change', () => { renderTabel(); hitungRingkasan(); });
+    dateTo.addEventListener('change', () => { renderTabel(); hitungRingkasan(); });
+
+    function getFilteredData() {
+        const periode = filterPeriode.value;
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+
+        return transaksi.filter(t => {
+            const tgl = new Date(t.tanggal);
+            tgl.setHours(0, 0, 0, 0);
+
+            switch (periode) {
+                case 'today':
+                    return tgl.getTime() === today.getTime();
+                case 'week': {
+                    const start = new Date(today);
+                    const day = start.getDay();
+                    const diff = start.getDate() - day + (day === 0 ? -6 : 1);
+                    start.setDate(diff);
+                    const end = new Date(start);
+                    end.setDate(start.getDate() + 6);
+                    return tgl >= start && tgl <= end;
+                }
+                case 'month':
+                    return tgl.getMonth() === today.getMonth() && tgl.getFullYear() === today.getFullYear();
+                case 'year':
+                    return tgl.getFullYear() === today.getFullYear();
+                case 'custom': {
+                    const from = dateFrom.value ? new Date(dateFrom.value) : null;
+                    const to = dateTo.value ? new Date(dateTo.value) : null;
+                    if (from) from.setHours(0, 0, 0, 0);
+                    if (to) to.setHours(23, 59, 59, 999);
+                    if (from && to) return tgl >= from && tgl <= to;
+                    if (from) return tgl >= from;
+                    if (to) return tgl <= to;
+                    return true;
+                }
+                default: return true;
+            }
+        });
+    }
+
+    // ========== SIMPAN TRANSAKSI KE DATABASE ==========
+    document.getElementById('formTransaksi').addEventListener('submit', async function(e) {
+        e.preventDefault();
+        const jumlah = parseAngkaInput(inputJumlah.value);
+        const harga  = parseAngkaInput(inputHarga.value);
+
+        if (jumlah <= 0 || harga <= 0) {
+            showToast('⚠️ Jumlah dan harga harus lebih dari 0', true);
+            return;
+        }
+
+        try {
+            const res = await fetch('/api/transaksi', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    tanggal: document.getElementById('tanggal').value,
+                    jenis: document.getElementById('jenis').value,
+                    jumlahTabung: jumlah,
+                    hargaPerPcs: harga
+                })
+            });
+            const data = await res.json();
+
+            if (data.success) {
+                showToast('✅ Transaksi berhasil disimpan');
+                this.reset();
+                document.getElementById('tanggal').valueAsDate = new Date();
+                inputTotal.value = '0';
+                await loadTransaksi();
+            } else {
+                showToast('❌ ' + (data.error || 'Gagal menyimpan'), true);
+            }
+        } catch (err) {
+            showToast('❌ Gagal terhubung ke server', true);
+        }
+    });
+
+    // ========== HAPUS / RESET ==========
+    async function hapusData(id) {
+        if (currentUser.role !== 'admin') {
+            showToast('⛔ Hanya admin yang dapat menghapus', true);
+            return;
+        }
+        if (!confirm('Yakin ingin menghapus transaksi ini?')) return;
+
+        try {
+            const res = await fetch(`/api/transaksi/${id}`, { method: 'DELETE' });
+            const data = await res.json();
+            if (data.success) {
+                showToast('✅ Transaksi dihapus');
+                await loadTransaksi();
+            } else {
+                showToast('❌ ' + (data.error || 'Gagal menghapus'), true);
+            }
+        } catch (err) {
+            showToast('❌ Gagal terhubung ke server', true);
+        }
+    }
+
+    async function resetData() {
+        if (currentUser.role !== 'admin') {
+            showToast('⛔ Hanya admin yang dapat mereset', true);
+            return;
+        }
+        if (!confirm('⚠️ PERINGATAN: Semua data akan dihapus permanen. Lanjutkan?')) return;
+
+        try {
+            const res = await fetch('/api/transaksi', { method: 'DELETE' });
+            const data = await res.json();
+            if (data.success) {
+                showToast('✅ Semua data telah direset');
+                await loadTransaksi();
+            } else {
+                showToast('❌ Gagal mereset data', true);
+            }
+        } catch (err) {
+            showToast('❌ Gagal terhubung ke server', true);
+        }
+    }
+
+    // ========== BACKUP MANUAL ==========
+    async function backupNow() {
+        if (currentUser.role !== 'admin') return;
+        showToast('📱 Mengirim backup ke Telegram...');
+
+        try {
+            const res = await fetch('/api/backup-now', { method: 'POST' });
+            const data = await res.json();
+            if (data.success) {
+                showToast('✅ Backup berhasil dikirim ke Telegram');
+            } else {
+                showToast('❌ ' + (data.error || 'Backup gagal'), true);
+            }
+        } catch (err) {
+            showToast('❌ Gagal terhubung ke server', true);
+        }
+    }
+
+    // ========== RENDER TABEL ==========
+    function renderTabel() {
+        const tbody = document.getElementById('tableBody');
+        tbody.innerHTML = '';
+        const data = getFilteredData();
+        const isAdmin = currentUser && currentUser.role === 'admin';
+
+        if (data.length === 0) {
+            const colSpan = isAdmin ? 7 : 6;
+            tbody.innerHTML = `<tr><td colspan="${colSpan}" class="empty-state">📭 Tidak ada data pada periode ini.</td></tr>`;
+            return;
+        }
+
+        const dataUrut = [...data].sort(
+            (a, b) => new Date(b.tanggal) - new Date(a.tanggal) || b.id - a.id
+        );
+
+        dataUrut.forEach((t, i) => {
+            const badge = t.jenis === 'Pembelian' ? 'badge-beli' : 'badge-jual';
+            const aksiCell = isAdmin
+                ? `<td class="text-center"><button class="btn-danger" onclick="hapusData(${t.id})">Hapus</button></td>`
+                : '';
+            tbody.innerHTML += `
+                <tr>
+                    <td class="text-center">${i + 1}</td>
+                    <td>${formatTanggal(t.tanggal)}</td>
+                    <td class="text-center"><span class="badge ${badge}">${t.jenis}</span></td>
+                    <td class="text-center">${t.jumlahTabung}</td>
+                    <td class="text-right">${formatRupiah(t.hargaPerPcs)}</td>
+                    <td class="text-right"><strong>${formatRupiah(t.totalNilai)}</strong></td>
+                    ${aksiCell}
+                </tr>`;
+        });
+    }
+
+    // ========== RINGKASAN ==========
+    function hitungRingkasan() {
+        const data = getFilteredData();
+        let totalModal = 0, totalIncome = 0, totalRefill = 0, totalTerjual = 0;
+
+        data.forEach(t => {
+            if (t.jenis === 'Pembelian') {
+                totalModal += t.totalNilai;
+                totalRefill += t.jumlahTabung;
+            } else {
+                totalIncome += t.totalNilai;
+                totalTerjual += t.jumlahTabung;
+            }
+        });
+
+        document.getElementById('sumModal').textContent   = formatRupiah(totalModal);
+        document.getElementById('sumIncome').textContent  = formatRupiah(totalIncome);
+        document.getElementById('sumProfit').textContent  = formatRupiah(totalIncome - totalModal);
+        document.getElementById('sumRefill').textContent  = totalRefill;
+        document.getElementById('sumTerjual').textContent = totalTerjual;
+    }
+
+    // ========== EXPORT EXCEL ==========
+    function exportToExcel() {
+        const data = getFilteredData();
+        if (data.length === 0) {
+            showToast('⚠️ Tidak ada data untuk diekspor', true);
+            return;
+        }
+
+        const dataUrut = [...data].sort(
+            (a, b) => new Date(a.tanggal) - new Date(b.tanggal) || a.id - b.id
+        );
+
+        const wsData = [
+            ['LAPORAN TRANSAKSI LPG'],
+            ['Periode: ' + filterPeriode.options[filterPeriode.selectedIndex].text],
+            ['Diekspor: ' + new Date().toLocaleString('id-ID')],
+            [],
+            ['No', 'Tanggal', 'Jenis Transaksi', 'Jumlah Tabung', 'Harga /pcs (Rp)', 'Total Nilai (Rp)']
+        ];
+
+        dataUrut.forEach((t, i) => {
+            wsData.push([i + 1, formatTanggal(t.tanggal), t.jenis, t.jumlahTabung, t.hargaPerPcs, t.totalNilai]);
+        });
+
+        let totalModal = 0, totalIncome = 0, totalRefill = 0, totalTerjual = 0;
+        data.forEach(t => {
+            if (t.jenis === 'Pembelian') {
+                totalModal += t.totalNilai; totalRefill += t.jumlahTabung;
+            } else {
+                totalIncome += t.totalNilai; totalTerjual += t.jumlahTabung;
+            }
+        });
+
+        wsData.push([]);
+        wsData.push(['', '', '', '', 'TOTAL MODAL:', totalModal]);
+        wsData.push(['', '', '', '', 'TOTAL INCOME:', totalIncome]);
+        wsData.push(['', '', '', '', 'SELISIH (Profit):', totalIncome - totalModal]);
+        wsData.push([]);
+        wsData.push(['', '', '', 'Total Tabung Refill:', totalRefill, '']);
+        wsData.push(['', '', '', 'Total Tabung Terjual:', totalTerjual, '']);
+
+        const ws = XLSX.utils.aoa_to_sheet(wsData);
+        ws['!cols'] = [{ wch: 5 }, { wch: 12 }, { wch: 18 }, { wch: 14 }, { wch: 18 }, { wch: 20 }];
+        ws['!merges'] = [{ s: { r: 0, c: 0 }, e: { r: 0, c: 5 } }];
+
+        const wb = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb, ws, 'Transaksi LPG');
+        XLSX.writeFile(wb, `Laporan_LPG_${new Date().toISOString().slice(0,10)}.xlsx`);
+        showToast('✅ File Excel berhasil diunduh');
+    }
+
+    // ========== LOGOUT ==========
+    async function logout() {
+        if (!confirm('Yakin ingin logout?')) return;
+        await fetch('/api/logout', { method: 'POST' });
+        window.location.href = '/login';
+    }
+
+    // ========== MODAL PEGAWAI ==========
+    async function openUserModal() {
+        if (currentUser.role !== 'admin') return;
+        document.getElementById('userModal').classList.add('active');
+        await loadUsers();
+    }
+    function closeUserModal() {
+        document.getElementById('userModal').classList.remove('active');
+    }
+    async function loadUsers() {
+        const list = document.getElementById('userList');
+        try {
+            const res = await fetch('/api/users');
+            const data = await res.json();
+            if (data.pegawai.length === 0) {
+                list.innerHTML = '<li style="justify-content:center; color:var(--text-muted);">Belum ada pegawai terdaftar.</li>';
+                return;
+            }
+            list.innerHTML = data.pegawai.map(u => `
+                <li>
+                    <div class="user-info">
+                        <strong>${u.nama}</strong>
+                        <small>@${u.username}</small>
+                    </div>
+                    <button class="btn-danger" onclick="deleteUser('${u.username}')">Hapus</button>
+                </li>
+            `).join('');
+        } catch (err) {
+            list.innerHTML = '<li style="color:var(--danger);">Gagal memuat data.</li>';
+        }
+    }
+    document.getElementById('formUser').addEventListener('submit', async function(e) {
+        e.preventDefault();
+        const username = document.getElementById('newUsername').value.trim().toLowerCase();
+        const nama = document.getElementById('newNama').value.trim();
+        const password = document.getElementById('newPassword').value;
+
+        try {
+            const res = await fetch('/api/users', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ username, nama, password })
+            });
+            const data = await res.json();
+            if (data.success) {
+                showToast('✅ Pegawai ditambahkan');
+                this.reset();
+                loadUsers();
+            } else {
+                showToast('❌ ' + (data.error || 'Gagal'), true);
+            }
+        } catch (err) {
+            showToast('❌ Gagal terhubung ke server', true);
+        }
+    });
+    async function deleteUser(username) {
+        if (!confirm(`Hapus pegawai @${username}?`)) return;
+        try {
+            const res = await fetch(`/api/users/${username}`, { method: 'DELETE' });
+            const data = await res.json();
+            if (data.success) loadUsers();
+            else showToast('❌ Gagal menghapus', true);
+        } catch (err) {
+            showToast('❌ Gagal terhubung ke server', true);
+        }
+    }
+    document.getElementById('userModal').addEventListener('click', function(e) {
+        if (e.target === this) closeUserModal();
+    });
+</script>
+
+</body>
+</html>
