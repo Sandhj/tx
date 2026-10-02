@@ -59,6 +59,9 @@ ingress:
 
 SELESAI 
 
+masuk lokasi termux
+<pre><code>cd /data/data/com.termux/files/home/.cloudflared</code></pre>
+
 Tips:
 Karena Termux akan mematikan proses jika layar dimatikan atau aplikasi ditutup, gunakan  tmux  agar server dan tunnel tetap hidup:
 
