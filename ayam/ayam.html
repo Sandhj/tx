@@ -10,20 +10,11 @@
     <script src="https://cdn.sheetjs.com/xlsx-0.20.1/package/dist/xlsx.full.min.js"></script>
     <style>
         :root {
-            --primary: #f59e0b;
-            --primary-light: #fbbf24;
-            --primary-dark: #d97706;
+            --primary: #f59e0b; --primary-light: #fbbf24; --primary-dark: #d97706;
             --secondary: #84cc16;
-            --secondary-dark: #65a30d;
-            --success: #10b981;
-            --danger: #ef4444;
-            --warning: #f59e0b;
-            --info: #0ea5e9;
-            --bg: #fffbeb;
-            --card: #ffffff;
-            --text: #1c1917;
-            --text-muted: #78716c;
-            --border: #fde68a;
+            --success: #10b981; --danger: #ef4444; --warning: #f59e0b; --info: #0ea5e9;
+            --bg: #fffbeb; --card: #ffffff; --text: #1c1917;
+            --text-muted: #78716c; --border: #fde68a;
             --radius: 14px;
             --shadow: 0 1px 3px rgba(217, 119, 6, 0.08), 0 4px 12px rgba(217, 119, 6, 0.08);
         }
@@ -35,12 +26,10 @@
                               radial-gradient(circle at 80% 90%, rgba(132, 204, 22, 0.1) 0%, transparent 50%);
             color: var(--text);
             margin: 0; padding: 24px; line-height: 1.6; font-size: 15px;
-            -webkit-font-smoothing: antialiased;
-            min-height: 100vh;
+            -webkit-font-smoothing: antialiased; min-height: 100vh;
         }
         .container { max-width: 1200px; margin: 0 auto; }
 
-        /* TOP BAR */
         .topbar {
             display: flex; justify-content: space-between; align-items: center;
             background: var(--card); padding: 14px 20px;
@@ -73,7 +62,6 @@
         .role-pegawai { background: #dcfce7; color: #166534; }
         .topbar-right { display: flex; gap: 8px; flex-wrap: wrap; }
 
-        /* CARD */
         .card {
             background: var(--card); padding: 24px;
             border-radius: var(--radius); box-shadow: var(--shadow);
@@ -89,13 +77,11 @@
             border-radius: 2px;
         }
 
-        /* FORM */
         .form-grid {
             display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
             gap: 16px; align-items: end;
         }
         .form-group { display: flex; flex-direction: column; }
-        .form-group.full-width { grid-column: 1 / -1; }
         label {
             font-weight: 600; margin-bottom: 6px; font-size: 0.8rem;
             color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px;
@@ -110,13 +96,9 @@
             outline: none; border-color: var(--primary);
             box-shadow: 0 0 0 4px rgba(245, 158, 11, 0.15);
         }
-        input[readonly] {
-            background: #fef3c7; color: var(--primary-dark);
-            font-weight: 700; cursor: default;
-        }
+        input[readonly] { background: #fef3c7; color: var(--primary-dark); font-weight: 700; cursor: default; }
         textarea { resize: vertical; min-height: 60px; }
 
-        /* SUB SECTION (Jantan/Betina) */
         .sub-section {
             background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);
             padding: 16px; border-radius: 12px;
@@ -129,7 +111,9 @@
         .sub-section.jantan h4 { color: #92400e; }
         .sub-section.betina h4 { color: #166534; }
 
-        /* BUTTONS */
+        .price-hint { font-size: 0.72rem; color: var(--primary-dark); margin-top: 4px; font-style: italic; display: none; }
+        .price-hint.show { display: block; }
+
         button {
             padding: 11px 18px; border: none; border-radius: 10px;
             font-size: 0.9rem; font-weight: 600; font-family: inherit;
@@ -144,33 +128,20 @@
         .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 6px 16px rgba(245, 158, 11, 0.45); }
         .btn-secondary { background: #f5f5f4; color: var(--text); }
         .btn-secondary:hover { background: #e7e5e4; }
-        .btn-success {
-            background: linear-gradient(135deg, #10b981, #34d399);
-            color: white; box-shadow: 0 4px 12px rgba(16, 185, 129, 0.25);
-        }
+        .btn-success { background: linear-gradient(135deg, #10b981, #34d399); color: white; box-shadow: 0 4px 12px rgba(16, 185, 129, 0.25); }
         .btn-success:hover { transform: translateY(-1px); }
-        .btn-warning {
-            background: linear-gradient(135deg, #f59e0b, #fbbf24);
-            color: white; box-shadow: 0 4px 12px rgba(245, 158, 11, 0.25);
-        }
+        .btn-warning { background: linear-gradient(135deg, #f59e0b, #fbbf24); color: white; box-shadow: 0 4px 12px rgba(245, 158, 11, 0.25); }
         .btn-warning:hover { transform: translateY(-1px); }
-        .btn-info {
-            background: linear-gradient(135deg, #0ea5e9, #38bdf8);
-            color: white; box-shadow: 0 4px 12px rgba(14, 165, 233, 0.25);
-        }
+        .btn-info { background: linear-gradient(135deg, #0ea5e9, #38bdf8); color: white; box-shadow: 0 4px 12px rgba(14, 165, 233, 0.25); }
         .btn-info:hover { transform: translateY(-1px); }
-        .btn-danger {
-            background: #fee2e2; color: var(--danger);
-            padding: 6px 12px; font-size: 0.8rem;
-        }
+        .btn-edit { background: #dbeafe; color: #1d4ed8; padding: 6px 12px; font-size: 0.8rem; }
+        .btn-edit:hover { background: #bfdbfe; }
+        .btn-edit:disabled { background: #f1f5f9; color: #94a3b8; cursor: not-allowed; opacity: 0.6; }
+        .btn-danger { background: #fee2e2; color: var(--danger); padding: 6px 12px; font-size: 0.8rem; }
         .btn-danger:hover { background: #fecaca; }
-        .btn-reset {
-            background: #fee2e2; color: var(--danger);
-            font-size: 0.85rem; padding: 8px 14px;
-        }
+        .btn-reset { background: #fee2e2; color: var(--danger); font-size: 0.85rem; padding: 8px 14px; }
         .btn-reset:hover { background: #fecaca; }
 
-        /* SUMMARY */
         .summary-grid {
             display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 14px;
         }
@@ -184,18 +155,18 @@
             width: 4px; background: var(--primary);
         }
         .summary-item.income::before { background: var(--success); }
+        .summary-item.expense::before { background: #8b5cf6; }
         .summary-item.count::before { background: var(--secondary); }
         .summary-item.tx::before { background: var(--info); }
+        .summary-item.profit::before { background: var(--primary-dark); }
         .summary-item h3 {
             margin: 0 0 6px 0; font-size: 0.75rem;
             color: var(--text-muted); text-transform: uppercase;
             letter-spacing: 0.5px; font-weight: 600;
         }
-        .summary-item p {
-            margin: 0; font-size: 1.35rem; font-weight: 800; letter-spacing: -0.5px;
-        }
+        .summary-item p { margin: 0; font-size: 1.35rem; font-weight: 800; letter-spacing: -0.5px; }
+        .negative { color: var(--danger) !important; }
 
-        /* FILTER */
         .filter-bar {
             display: flex; gap: 12px; flex-wrap: wrap; align-items: end;
             margin-bottom: 20px; padding: 16px;
@@ -208,10 +179,7 @@
         .date-range.active { display: flex; }
         .date-range .form-group { flex: 1; min-width: 140px; }
 
-        /* TABLE */
-        .table-container {
-            overflow-x: auto; border-radius: 10px; border: 1px solid var(--border);
-        }
+        .table-container { overflow-x: auto; border-radius: 10px; border: 1px solid var(--border); }
         table { width: 100%; border-collapse: collapse; }
         th, td {
             padding: 12px 14px; text-align: left;
@@ -230,11 +198,14 @@
         }
         .badge-jual { background: #dcfce7; color: #166534; }
         .badge-retur { background: #fee2e2; color: #991b1b; }
+        .badge-op { background: #ede9fe; color: #5b21b6; }
+        .badge-admin { background: #fef3c7; color: #92400e; }
+        .badge-lain { background: #e0e7ff; color: #3730a3; }
+        .lock-icon { font-size: 0.75rem; margin-left: 4px; opacity: 0.6; }
         .text-right  { text-align: right; }
         .text-center { text-align: center; }
         .empty-state { text-align: center; padding: 40px 20px; color: var(--text-muted); }
 
-        /* TOAST */
         .toast {
             position: fixed; top: 20px; right: 20px;
             padding: 14px 20px; border-radius: 10px;
@@ -247,7 +218,6 @@
         .toast.show { transform: translateX(0); }
         .toast.error { border-left-color: var(--danger); }
 
-        /* MODAL */
         .modal-overlay {
             display: none; position: fixed; inset: 0;
             background: rgba(28, 25, 23, 0.6); backdrop-filter: blur(4px);
@@ -256,7 +226,7 @@
         .modal-overlay.active { display: flex; }
         .modal {
             background: var(--card); border-radius: var(--radius);
-            max-width: 600px; width: 100%; max-height: 90vh; overflow-y: auto;
+            max-width: 650px; width: 100%; max-height: 90vh; overflow-y: auto;
             box-shadow: 0 20px 60px rgba(0,0,0,0.3);
         }
         .modal-header {
@@ -269,6 +239,17 @@
             border-radius: 8px; cursor: pointer; font-size: 1.1rem; padding: 0;
         }
         .modal-body { padding: 24px; }
+        .modal-footer {
+            padding: 16px 24px; border-top: 1px solid var(--border);
+            display: flex; gap: 10px; justify-content: flex-end;
+        }
+        .edit-banner {
+            background: #fef3c7; border: 1px solid #fde68a;
+            padding: 10px 14px; border-radius: 8px;
+            font-size: 0.85rem; color: #92400e;
+            margin-bottom: 16px; display: none;
+        }
+        .edit-banner.show { display: block; }
         .user-list { list-style: none; padding: 0; margin: 0 0 20px 0; }
         .user-list li {
             display: flex; justify-content: space-between; align-items: center;
@@ -293,7 +274,6 @@
 
 <div class="container">
 
-    <!-- TOP BAR -->
     <div class="topbar">
         <div class="topbar-left">
             <h1>🐔 Transaksi Ayam KUB</h1>
@@ -307,9 +287,7 @@
         </div>
         <div class="topbar-right">
             <button class="btn-info admin-only" onclick="backupNow()">📱 Backup</button>
-            <button class="btn-warning admin-only" id="btnKelolaPegawai" onclick="openUserModal()" style="display:none;">
-                👥 Pegawai
-            </button>
+            <button class="btn-warning admin-only" id="btnKelolaPegawai" onclick="openUserModal()" style="display:none;">👥 Pegawai</button>
             <button class="btn-secondary" onclick="logout()">🚪 Logout</button>
         </div>
     </div>
@@ -326,50 +304,70 @@
                 <div class="form-group">
                     <label for="jenis">Jenis Transaksi</label>
                     <select id="jenis" required>
-                        <option value="Penjualan">🐓 Penjualan</option>
-                        <option value="Retur">🔄 Retur / Pengembalian</option>
+                        <optgroup label="── Transaksi Ayam ──">
+                            <option value="Penjualan">🐓 Penjualan</option>
+                            <option value="Retur">🔄 Retur / Pengembalian</option>
+                        </optgroup>
+                        <optgroup label="── Catatan Arus Kas ──">
+                            <option value="Operasional">🏭 Operasional</option>
+                            <option value="Administrasi">📋 Administrasi</option>
+                            <option value="Lain-lain">📝 Lain-lain</option>
+                        </optgroup>
                     </select>
                 </div>
-                <div class="form-group full-width">
+                <div class="form-group" style="grid-column: 1 / -1;">
                     <label for="keterangan">Keterangan (Opsional)</label>
-                    <textarea id="keterangan" placeholder="Contoh: Pembelian dari Pak Budi"></textarea>
+                    <textarea id="keterangan" placeholder="Contoh: Pembelian dari Pak Budi / Biaya pakan"></textarea>
                 </div>
             </div>
 
-            <!-- Data Jantan -->
-            <div class="sub-section jantan" style="margin-top:16px;">
-                <h4>🐓 Data Ayam Jantan</h4>
+            <!-- Mode Transaksi (Penjualan/Retur) -->
+            <div id="modeTransaksi">
+                <div class="sub-section jantan" style="margin-top:16px;">
+                    <h4>🐓 Data Ayam Jantan</h4>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="jmlJantan">Jumlah (Ekor)</label>
+                            <input type="text" id="jmlJantan" inputmode="numeric" placeholder="0" value="0">
+                        </div>
+                        <div class="form-group">
+                            <label for="hargaJantan">Harga / Ekor (Rp)</label>
+                            <input type="text" id="hargaJantan" inputmode="numeric" placeholder="0" value="0">
+                            <small class="price-hint" id="hintHargaJantan">💡 Harga otomatis dari transaksi terakhir</small>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="sub-section betina">
+                    <h4>🐔 Data Ayam Betina</h4>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="jmlBetina">Jumlah (Ekor)</label>
+                            <input type="text" id="jmlBetina" inputmode="numeric" placeholder="0" value="0">
+                        </div>
+                        <div class="form-group">
+                            <label for="hargaBetina">Harga / Ekor (Rp)</label>
+                            <input type="text" id="hargaBetina" inputmode="numeric" placeholder="0" value="0">
+                            <small class="price-hint" id="hintHargaBetina">💡 Harga otomatis dari transaksi terakhir</small>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="form-grid">
-                    <div class="form-group">
-                        <label for="jmlJantan">Jumlah (Ekor)</label>
-                        <input type="text" id="jmlJantan" inputmode="numeric" placeholder="0">
-                    </div>
-                    <div class="form-group">
-                        <label for="hargaJantan">Harga / Ekor (Rp)</label>
-                        <input type="text" id="hargaJantan" inputmode="numeric" placeholder="0">
+                    <div class="form-group" style="grid-column: 1 / -1;">
+                        <label for="totalNilai">💰 Estimasi Total (Gabungan)</label>
+                        <input type="text" id="totalNilai" readonly value="0">
                     </div>
                 </div>
             </div>
 
-            <!-- Data Betina -->
-            <div class="sub-section betina">
-                <h4>🐔 Data Ayam Betina</h4>
-                <div class="form-grid">
-                    <div class="form-group">
-                        <label for="jmlBetina">Jumlah (Ekor)</label>
-                        <input type="text" id="jmlBetina" inputmode="numeric" placeholder="0">
+            <!-- Mode Pengeluaran -->
+            <div id="modePengeluaran" style="display:none;">
+                <div class="form-grid" style="margin-top:16px;">
+                    <div class="form-group" style="grid-column: 1 / -1;">
+                        <label for="totalPengeluaran">💸 Total Pengeluaran (Rp)</label>
+                        <input type="text" id="totalPengeluaran" inputmode="numeric" placeholder="0">
                     </div>
-                    <div class="form-group">
-                        <label for="hargaBetina">Harga / Ekor (Rp)</label>
-                        <input type="text" id="hargaBetina" inputmode="numeric" placeholder="0">
-                    </div>
-                </div>
-            </div>
-
-            <div class="form-grid">
-                <div class="form-group full-width">
-                    <label for="totalNilai">💰 Estimasi Total (Gabungan)</label>
-                    <input type="text" id="totalNilai" readonly value="0">
                 </div>
             </div>
 
@@ -389,8 +387,16 @@
                 <h3>🔄 Total Retur</h3>
                 <p id="sumRetur">Rp 0</p>
             </div>
+            <div class="summary-item expense">
+                <h3>💸 Total Pengeluaran</h3>
+                <p id="sumExpense">Rp 0</p>
+            </div>
+            <div class="summary-item profit">
+                <h3>📈 Selisih (Penjualan − Retur − Pengeluaran)</h3>
+                <p id="sumProfit">Rp 0</p>
+            </div>
             <div class="summary-item count">
-                <h3>🐓🐔 Total Ekor Terjual</h3>
+                <h3>🐓🐔 Total Ekor</h3>
                 <p id="sumEkor">0 Ekor</p>
             </div>
             <div class="summary-item tx">
@@ -443,7 +449,7 @@
                         <th class="text-center">🐔 Betina</th>
                         <th class="text-right">Harga Betina</th>
                         <th class="text-right">Total</th>
-                        <th class="text-center admin-only" style="width:80px;">Aksi</th>
+                        <th class="text-center" style="width:130px;">Aksi</th>
                     </tr>
                 </thead>
                 <tbody id="tableBody"></tbody>
@@ -452,496 +458,12 @@
     </div>
 </div>
 
-<!-- TOAST -->
 <div class="toast" id="toast"></div>
 
-<!-- MODAL PEGAWAI -->
-<div class="modal-overlay" id="userModal">
+<!-- MODAL EDIT -->
+<div class="modal-overlay" id="editModal">
     <div class="modal">
         <div class="modal-header">
-            <h2>👥 Kelola Pegawai</h2>
-            <button class="modal-close" onclick="closeUserModal()">✕</button>
+            <h2>✏️ Edit Transaksi</h2>
+            <button class="modal-close" onclick="closeEditModal()">✕</button>
         </div>
-        <div class="modal-body">
-            <h3 style="margin:0 0 12px 0; font-size:0.95rem;">Daftar Pegawai</h3>
-            <ul class="user-list" id="userList">
-                <li style="justify-content:center; color:var(--text-muted);">Memuat...</li>
-            </ul>
-
-            <h3 style="margin:20px 0 12px 0; font-size:0.95rem;">Tambah Pegawai Baru</h3>
-            <form id="formUser" style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
-                <div class="form-group">
-                    <label for="newUsername">Username</label>
-                    <input type="text" id="newUsername" placeholder="contoh: budi" required>
-                </div>
-                <div class="form-group">
-                    <label for="newNama">Nama Lengkap</label>
-                    <input type="text" id="newNama" placeholder="contoh: Budi Santoso">
-                </div>
-                <div class="form-group">
-                    <label for="newPassword">Password</label>
-                    <input type="text" id="newPassword" placeholder="min. 4 karakter" required>
-                </div>
-                <div class="form-group" style="justify-content:end;">
-                    <button type="submit" class="btn-primary" style="margin-top:0;">➕ Tambah</button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
-
-<script>
-    // ========== STATE ==========
-    let transaksi = [];
-    let currentUser = null;
-
-    // ========== INIT ==========
-    document.getElementById('tanggal').valueAsDate = new Date();
-    checkAuth();
-
-    async function checkAuth() {
-        try {
-            const res = await fetch('/api/me');
-            if (!res.ok) { window.location.href = '/login'; return; }
-            currentUser = await res.json();
-            setupUI();
-            loadTransaksi();
-        } catch (err) {
-            window.location.href = '/login';
-        }
-    }
-
-    function setupUI() {
-        document.getElementById('userName').textContent = currentUser.nama;
-        const roleTag = document.getElementById('userRole');
-        roleTag.textContent = currentUser.role;
-        roleTag.className = 'role-tag ' + (currentUser.role === 'admin' ? 'role-admin' : 'role-pegawai');
-        document.getElementById('userAvatar').textContent = currentUser.nama.charAt(0).toUpperCase();
-
-        const isAdmin = currentUser.role === 'admin';
-        document.getElementById('btnKelolaPegawai').style.display = isAdmin ? 'inline-flex' : 'none';
-        document.querySelectorAll('.admin-only').forEach(el => {
-            el.style.display = isAdmin ? 'inline-flex' : 'none';
-        });
-    }
-
-    // ========== TOAST ==========
-    function showToast(msg, isError = false) {
-        const toast = document.getElementById('toast');
-        toast.textContent = msg;
-        toast.className = 'toast show' + (isError ? ' error' : '');
-        setTimeout(() => toast.classList.remove('show'), 3000);
-    }
-
-    // ========== LOAD DATA ==========
-    async function loadTransaksi() {
-        try {
-            const res = await fetch('/api/ayam');
-            if (!res.ok) throw new Error('Gagal memuat data');
-            transaksi = await res.json();
-            renderTabel();
-            hitungRingkasan();
-        } catch (err) {
-            showToast('❌ Gagal memuat data: ' + err.message, true);
-        }
-    }
-
-    // ========== FORMAT ==========
-    function formatAngkaInput(value) {
-        const num = String(value).replace(/\D/g, '');
-        if (!num) return '';
-        return num.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
-    }
-    function parseAngkaInput(value) {
-        return parseInt(String(value).replace(/\./g, '')) || 0;
-    }
-    function formatRupiah(angka) {
-        if (!angka && angka !== 0) return 'Rp 0';
-        return 'Rp ' + formatAngkaInput(angka);
-    }
-    function formatTanggal(tgl) {
-        const [y, m, d] = tgl.split('-');
-        return `${d}/${m}/${y}`;
-    }
-
-    // ========== INPUT NUMBER ==========
-    const inputJmlJantan   = document.getElementById('jmlJantan');
-    const inputHargaJantan = document.getElementById('hargaJantan');
-    const inputJmlBetina   = document.getElementById('jmlBetina');
-    const inputHargaBetina = document.getElementById('hargaBetina');
-    const inputTotal       = document.getElementById('totalNilai');
-
-    [inputJmlJantan, inputHargaJantan, inputJmlBetina, inputHargaBetina].forEach(setupNumberInput);
-
-    function setupNumberInput(input) {
-        input.addEventListener('input', function() {
-            const pos = this.selectionStart;
-            const oldLen = this.value.length;
-            this.value = formatAngkaInput(this.value);
-            const newLen = this.value.length;
-            this.setSelectionRange(pos + (newLen - oldLen), pos + (newLen - oldLen));
-            hitungTotalOtomatis();
-        });
-    }
-
-    function hitungTotalOtomatis() {
-        const jmlJ = parseAngkaInput(inputJmlJantan.value);
-        const hrgJ = parseAngkaInput(inputHargaJantan.value);
-        const jmlB = parseAngkaInput(inputJmlBetina.value);
-        const hrgB = parseAngkaInput(inputHargaBetina.value);
-        const total = (jmlJ * hrgJ) + (jmlB * hrgB);
-        inputTotal.value = formatAngkaInput(total);
-    }
-
-    // ========== FILTER ==========
-    const filterPeriode = document.getElementById('filterPeriode');
-    const dateRange = document.getElementById('dateRange');
-    const dateFrom = document.getElementById('dateFrom');
-    const dateTo = document.getElementById('dateTo');
-
-    filterPeriode.addEventListener('change', function() {
-        dateRange.classList.toggle('active', this.value === 'custom');
-        renderTabel();
-        hitungRingkasan();
-    });
-    dateFrom.addEventListener('change', () => { renderTabel(); hitungRingkasan(); });
-    dateTo.addEventListener('change', () => { renderTabel(); hitungRingkasan(); });
-
-    function getFilteredData() {
-        const periode = filterPeriode.value;
-        const today = new Date();
-        today.setHours(0, 0, 0, 0);
-
-        return transaksi.filter(t => {
-            const tgl = new Date(t.tanggal);
-            tgl.setHours(0, 0, 0, 0);
-
-            switch (periode) {
-                case 'today':
-                    return tgl.getTime() === today.getTime();
-                case 'week': {
-                    const start = new Date(today);
-                    const day = start.getDay();
-                    const diff = start.getDate() - day + (day === 0 ? -6 : 1);
-                    start.setDate(diff);
-                    const end = new Date(start);
-                    end.setDate(start.getDate() + 6);
-                    return tgl >= start && tgl <= end;
-                }
-                case 'month':
-                    return tgl.getMonth() === today.getMonth() && tgl.getFullYear() === today.getFullYear();
-                case 'year':
-                    return tgl.getFullYear() === today.getFullYear();
-                case 'custom': {
-                    const from = dateFrom.value ? new Date(dateFrom.value) : null;
-                    const to = dateTo.value ? new Date(dateTo.value) : null;
-                    if (from) from.setHours(0, 0, 0, 0);
-                    if (to) to.setHours(23, 59, 59, 999);
-                    if (from && to) return tgl >= from && tgl <= to;
-                    if (from) return tgl >= from;
-                    if (to) return tgl <= to;
-                    return true;
-                }
-                default: return true;
-            }
-        });
-    }
-
-    // ========== SIMPAN ==========
-    document.getElementById('formTransaksi').addEventListener('submit', async function(e) {
-        e.preventDefault();
-        const jmlJ = parseAngkaInput(inputJmlJantan.value);
-        const hrgJ = parseAngkaInput(inputHargaJantan.value);
-        const jmlB = parseAngkaInput(inputJmlBetina.value);
-        const hrgB = parseAngkaInput(inputHargaBetina.value);
-
-        if (jmlJ <= 0 && jmlB <= 0) {
-            showToast('⚠️ Jumlah jantan atau betina harus lebih dari 0', true);
-            return;
-        }
-
-        try {
-            const res = await fetch('/api/ayam', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    tanggal: document.getElementById('tanggal').value,
-                    jenis: document.getElementById('jenis').value,
-                    keterangan: document.getElementById('keterangan').value,
-                    jmlJantan: jmlJ,
-                    hargaJantan: hrgJ,
-                    jmlBetina: jmlB,
-                    hargaBetina: hrgB
-                })
-            });
-            const data = await res.json();
-
-            if (data.success) {
-                showToast('✅ Transaksi berhasil disimpan');
-                this.reset();
-                document.getElementById('tanggal').valueAsDate = new Date();
-                inputJmlJantan.value = '0';
-                inputHargaJantan.value = '0';
-                inputJmlBetina.value = '0';
-                inputHargaBetina.value = '0';
-                inputTotal.value = '0';
-                await loadTransaksi();
-            } else {
-                showToast('❌ ' + (data.error || 'Gagal menyimpan'), true);
-            }
-        } catch (err) {
-            showToast('❌ Gagal terhubung ke server', true);
-        }
-    });
-
-    // ========== HAPUS / RESET ==========
-    async function hapusData(id) {
-        if (currentUser.role !== 'admin') {
-            showToast('⛔ Hanya admin yang dapat menghapus', true);
-            return;
-        }
-        if (!confirm('Yakin ingin menghapus transaksi ini?')) return;
-
-        try {
-            const res = await fetch(`/api/ayam/${id}`, { method: 'DELETE' });
-            const data = await res.json();
-            if (data.success) {
-                showToast('✅ Transaksi dihapus');
-                await loadTransaksi();
-            } else {
-                showToast('❌ ' + (data.error || 'Gagal menghapus'), true);
-            }
-        } catch (err) {
-            showToast('❌ Gagal terhubung ke server', true);
-        }
-    }
-
-    async function resetData() {
-        if (currentUser.role !== 'admin') {
-            showToast('⛔ Hanya admin yang dapat mereset', true);
-            return;
-        }
-        if (!confirm('⚠️ PERINGATAN: Semua data akan dihapus permanen. Lanjutkan?')) return;
-
-        try {
-            const res = await fetch('/api/ayam', { method: 'DELETE' });
-            const data = await res.json();
-            if (data.success) {
-                showToast('✅ Semua data telah direset');
-                await loadTransaksi();
-            } else {
-                showToast('❌ Gagal mereset data', true);
-            }
-        } catch (err) {
-            showToast('❌ Gagal terhubung ke server', true);
-        }
-    }
-
-    // ========== BACKUP MANUAL ==========
-    async function backupNow() {
-        if (currentUser.role !== 'admin') return;
-        showToast('📱 Mengirim backup ke Telegram...');
-
-        try {
-            const res = await fetch('/api/backup-now', { method: 'POST' });
-            const data = await res.json();
-            if (data.success) showToast('✅ Backup berhasil dikirim');
-            else showToast('❌ ' + (data.error || 'Backup gagal'), true);
-        } catch (err) {
-            showToast('❌ Gagal terhubung ke server', true);
-        }
-    }
-
-    // ========== RENDER TABEL ==========
-    function renderTabel() {
-        const tbody = document.getElementById('tableBody');
-        tbody.innerHTML = '';
-        const data = getFilteredData();
-        const isAdmin = currentUser && currentUser.role === 'admin';
-
-        if (data.length === 0) {
-            const colSpan = isAdmin ? 10 : 9;
-            tbody.innerHTML = `<tr><td colspan="${colSpan}" class="empty-state">📭 Tidak ada data pada periode ini.</td></tr>`;
-            return;
-        }
-
-        const dataUrut = [...data].sort(
-            (a, b) => new Date(b.tanggal) - new Date(a.tanggal) || b.id - a.id
-        );
-
-        dataUrut.forEach((t, i) => {
-            const badge = t.jenis === 'Penjualan' ? 'badge-jual' : 'badge-retur';
-            const aksiCell = isAdmin
-                ? `<td class="text-center"><button class="btn-danger" onclick="hapusData(${t.id})">Hapus</button></td>`
-                : '';
-            tbody.innerHTML += `
-                <tr>
-                    <td class="text-center">${i + 1}</td>
-                    <td>${formatTanggal(t.tanggal)}</td>
-                    <td class="text-center"><span class="badge ${badge}">${t.jenis}</span></td>
-                    <td style="max-width:150px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;" title="${(t.keterangan || '-').replace(/"/g, '&quot;')}">${t.keterangan || '-'}</td>
-                    <td class="text-center">${t.jmlJantan}</td>
-                    <td class="text-right">${formatRupiah(t.hargaJantan)}</td>
-                    <td class="text-center">${t.jmlBetina}</td>
-                    <td class="text-right">${formatRupiah(t.hargaBetina)}</td>
-                    <td class="text-right"><strong>${formatRupiah(t.total)}</strong></td>
-                    ${aksiCell}
-                </tr>`;
-        });
-    }
-
-    // ========== RINGKASAN ==========
-    function hitungRingkasan() {
-        const data = getFilteredData();
-        let totalPenjualan = 0, totalRetur = 0, totalEkor = 0;
-
-        data.forEach(t => {
-            if (t.jenis === 'Penjualan') {
-                totalPenjualan += t.total;
-            } else {
-                totalRetur += t.total;
-            }
-            totalEkor += (t.jmlJantan || 0) + (t.jmlBetina || 0);
-        });
-
-        document.getElementById('sumPenjualan').textContent  = formatRupiah(totalPenjualan);
-        document.getElementById('sumRetur').textContent      = formatRupiah(totalRetur);
-        document.getElementById('sumEkor').textContent       = totalEkor + ' Ekor';
-        document.getElementById('sumTransaksi').textContent  = data.length;
-    }
-
-    // ========== EXPORT EXCEL ==========
-    function exportToExcel() {
-        const data = getFilteredData();
-        if (data.length === 0) {
-            showToast('⚠️ Tidak ada data untuk diekspor', true);
-            return;
-        }
-
-        const dataUrut = [...data].sort(
-            (a, b) => new Date(a.tanggal) - new Date(b.tanggal) || a.id - b.id
-        );
-
-        const wsData = [
-            ['LAPORAN TRANSAKSI AYAM KUB'],
-            ['Periode: ' + filterPeriode.options[filterPeriode.selectedIndex].text],
-            ['Diekspor: ' + new Date().toLocaleString('id-ID')],
-            [],
-            ['No', 'Tanggal', 'Jenis', 'Keterangan', 'Jml Jantan', 'Harga Jantan', 'Jml Betina', 'Harga Betina', 'Total (Rp)']
-        ];
-
-        dataUrut.forEach((t, i) => {
-            wsData.push([
-                i + 1, formatTanggal(t.tanggal), t.jenis, t.keterangan || '-',
-                t.jmlJantan, t.hargaJantan, t.jmlBetina, t.hargaBetina, t.total
-            ]);
-        });
-
-        let totalPenjualan = 0, totalRetur = 0, totalEkor = 0;
-        data.forEach(t => {
-            if (t.jenis === 'Penjualan') totalPenjualan += t.total;
-            else totalRetur += t.total;
-            totalEkor += (t.jmlJantan || 0) + (t.jmlBetina || 0);
-        });
-
-        wsData.push([]);
-        wsData.push(['', '', '', '', '', '', '', 'TOTAL PENJUALAN:', totalPenjualan]);
-        wsData.push(['', '', '', '', '', '', '', 'TOTAL RETUR:', totalRetur]);
-        wsData.push(['', '', '', '', '', '', '', 'SELISIH:', totalPenjualan - totalRetur]);
-        wsData.push([]);
-        wsData.push(['', '', '', '', '', '', '', 'TOTAL EKTER:', totalEkor]);
-        wsData.push(['', '', '', '', '', '', '', 'JUMLAH TRANSAKSI:', data.length]);
-
-        const ws = XLSX.utils.aoa_to_sheet(wsData);
-        ws['!cols'] = [
-            { wch: 5 }, { wch: 12 }, { wch: 12 }, { wch: 25 },
-            { wch: 10 }, { wch: 15 }, { wch: 10 }, { wch: 15 }, { wch: 18 }
-        ];
-        ws['!merges'] = [{ s: { r: 0, c: 0 }, e: { r: 0, c: 8 } }];
-
-        const wb = XLSX.utils.book_new();
-        XLSX.utils.book_append_sheet(wb, ws, 'Ayam KUB');
-        XLSX.writeFile(wb, `Laporan_AyamKUB_${new Date().toISOString().slice(0,10)}.xlsx`);
-        showToast('✅ File Excel berhasil diunduh');
-    }
-
-    // ========== LOGOUT ==========
-    async function logout() {
-        if (!confirm('Yakin ingin logout?')) return;
-        await fetch('/api/logout', { method: 'POST' });
-        window.location.href = '/login';
-    }
-
-    // ========== MODAL PEGAWAI ==========
-    async function openUserModal() {
-        if (currentUser.role !== 'admin') return;
-        document.getElementById('userModal').classList.add('active');
-        await loadUsers();
-    }
-    function closeUserModal() {
-        document.getElementById('userModal').classList.remove('active');
-    }
-    async function loadUsers() {
-        const list = document.getElementById('userList');
-        try {
-            const res = await fetch('/api/users');
-            const data = await res.json();
-            if (data.pegawai.length === 0) {
-                list.innerHTML = '<li style="justify-content:center; color:var(--text-muted);">Belum ada pegawai terdaftar.</li>';
-                return;
-            }
-            list.innerHTML = data.pegawai.map(u => `
-                <li>
-                    <div class="user-info">
-                        <strong>${u.nama}</strong>
-                        <small>@${u.username}</small>
-                    </div>
-                    <button class="btn-danger" onclick="deleteUser('${u.username}')">Hapus</button>
-                </li>
-            `).join('');
-        } catch (err) {
-            list.innerHTML = '<li style="color:var(--danger);">Gagal memuat data.</li>';
-        }
-    }
-    document.getElementById('formUser').addEventListener('submit', async function(e) {
-        e.preventDefault();
-        const username = document.getElementById('newUsername').value.trim().toLowerCase();
-        const nama = document.getElementById('newNama').value.trim();
-        const password = document.getElementById('newPassword').value;
-
-        try {
-            const res = await fetch('/api/users', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ username, nama, password })
-            });
-            const data = await res.json();
-            if (data.success) {
-                showToast('✅ Pegawai ditambahkan');
-                this.reset();
-                loadUsers();
-            } else {
-                showToast('❌ ' + (data.error || 'Gagal'), true);
-            }
-        } catch (err) {
-            showToast('❌ Gagal terhubung ke server', true);
-        }
-    });
-    async function deleteUser(username) {
-        if (!confirm(`Hapus pegawai @${username}?`)) return;
-        try {
-            const res = await fetch(`/api/users/${username}`, { method: 'DELETE' });
-            const data = await res.json();
-            if (data.success) loadUsers();
-            else showToast('❌ Gagal menghapus', true);
-        } catch (err) {
-            showToast('❌ Gagal terhubung ke server', true);
-        }
-    }
-    document.getElementById('userModal').addEventListener('click', function(e) {
-        if (e.target === this) closeUserModal();
-    });
-</script>
-
-</body>
-</html>
