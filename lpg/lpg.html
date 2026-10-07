@@ -10,18 +10,10 @@
     <script src="https://cdn.sheetjs.com/xlsx-0.20.1/package/dist/xlsx.full.min.js"></script>
     <style>
         :root {
-            --primary: #4f46e5;
-            --primary-light: #818cf8;
-            --primary-dark: #3730a3;
-            --success: #10b981;
-            --danger: #ef4444;
-            --warning: #f59e0b;
-            --info: #0ea5e9;
-            --bg: #f8fafc;
-            --card: #ffffff;
-            --text: #0f172a;
-            --text-muted: #64748b;
-            --border: #e2e8f0;
+            --primary: #4f46e5; --primary-light: #818cf8; --primary-dark: #3730a3;
+            --success: #10b981; --danger: #ef4444; --warning: #f59e0b; --info: #0ea5e9;
+            --bg: #f8fafc; --card: #ffffff; --text: #0f172a;
+            --text-muted: #64748b; --border: #e2e8f0;
             --radius: 14px;
             --shadow: 0 1px 3px rgba(0,0,0,0.04), 0 4px 12px rgba(0,0,0,0.04);
         }
@@ -86,17 +78,18 @@
             gap: 16px; align-items: end;
         }
         .form-group { display: flex; flex-direction: column; }
+        .form-group.hidden { display: none; }
         label {
             font-weight: 600; margin-bottom: 6px; font-size: 0.8rem;
             color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px;
         }
-        input, select {
+        input, select, textarea {
             padding: 11px 14px; border: 1.5px solid var(--border);
             border-radius: 10px; font-size: 0.95rem; font-family: inherit;
             font-weight: 500; color: var(--text); background: var(--card);
             transition: all 0.2s;
         }
-        input:focus, select:focus {
+        input:focus, select:focus, textarea:focus {
             outline: none; border-color: var(--primary);
             box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.1);
         }
@@ -104,11 +97,11 @@
             background: #f1f5f9; color: var(--primary-dark);
             font-weight: 700; cursor: default;
         }
+        textarea { resize: vertical; min-height: 60px; }
 
         .price-hint {
             font-size: 0.72rem; color: var(--primary);
-            margin-top: 4px; font-style: italic;
-            display: none;
+            margin-top: 4px; font-style: italic; display: none;
         }
         .price-hint.show { display: block; }
 
@@ -126,39 +119,18 @@
         .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 6px 16px rgba(79, 70, 229, 0.35); }
         .btn-secondary { background: #f1f5f9; color: var(--text); }
         .btn-secondary:hover { background: #e2e8f0; }
-        .btn-success {
-            background: linear-gradient(135deg, #10b981, #34d399);
-            color: white; box-shadow: 0 4px 12px rgba(16, 185, 129, 0.25);
-        }
+        .btn-success { background: linear-gradient(135deg, #10b981, #34d399); color: white; box-shadow: 0 4px 12px rgba(16, 185, 129, 0.25); }
         .btn-success:hover { transform: translateY(-1px); }
-        .btn-warning {
-            background: linear-gradient(135deg, #f59e0b, #fbbf24);
-            color: white; box-shadow: 0 4px 12px rgba(245, 158, 11, 0.25);
-        }
+        .btn-warning { background: linear-gradient(135deg, #f59e0b, #fbbf24); color: white; box-shadow: 0 4px 12px rgba(245, 158, 11, 0.25); }
         .btn-warning:hover { transform: translateY(-1px); }
-        .btn-info {
-            background: linear-gradient(135deg, #0ea5e9, #38bdf8);
-            color: white; box-shadow: 0 4px 12px rgba(14, 165, 233, 0.25);
-        }
+        .btn-info { background: linear-gradient(135deg, #0ea5e9, #38bdf8); color: white; box-shadow: 0 4px 12px rgba(14, 165, 233, 0.25); }
         .btn-info:hover { transform: translateY(-1px); }
-        .btn-edit {
-            background: #dbeafe; color: #1d4ed8;
-            padding: 6px 12px; font-size: 0.8rem;
-        }
+        .btn-edit { background: #dbeafe; color: #1d4ed8; padding: 6px 12px; font-size: 0.8rem; }
         .btn-edit:hover { background: #bfdbfe; }
-        .btn-edit:disabled {
-            background: #f1f5f9; color: #94a3b8;
-            cursor: not-allowed; opacity: 0.6;
-        }
-        .btn-danger {
-            background: #fee2e2; color: var(--danger);
-            padding: 6px 12px; font-size: 0.8rem;
-        }
+        .btn-edit:disabled { background: #f1f5f9; color: #94a3b8; cursor: not-allowed; opacity: 0.6; }
+        .btn-danger { background: #fee2e2; color: var(--danger); padding: 6px 12px; font-size: 0.8rem; }
         .btn-danger:hover { background: #fecaca; }
-        .btn-reset {
-            background: #fee2e2; color: var(--danger);
-            font-size: 0.85rem; padding: 8px 14px;
-        }
+        .btn-reset { background: #fee2e2; color: var(--danger); font-size: 0.85rem; padding: 8px 14px; }
         .btn-reset:hover { background: #fecaca; }
 
         .summary-grid {
@@ -176,12 +148,14 @@
         .summary-item.income::before { background: var(--success); }
         .summary-item.modal::before  { background: var(--danger); }
         .summary-item.profit::before { background: var(--warning); }
+        .summary-item.expense::before { background: #8b5cf6; }
         .summary-item h3 {
             margin: 0 0 6px 0; font-size: 0.75rem;
             color: var(--text-muted); text-transform: uppercase;
             letter-spacing: 0.5px; font-weight: 600;
         }
         .summary-item p { margin: 0; font-size: 1.35rem; font-weight: 800; letter-spacing: -0.5px; }
+        .negative { color: var(--danger) !important; }
 
         .filter-bar {
             display: flex; gap: 12px; flex-wrap: wrap; align-items: end;
@@ -214,6 +188,9 @@
         }
         .badge-beli { background: #fee2e2; color: #991b1b; }
         .badge-jual { background: #dcfce7; color: #166534; }
+        .badge-op { background: #ede9fe; color: #5b21b6; }
+        .badge-admin { background: #fef3c7; color: #92400e; }
+        .badge-lain { background: #e0e7ff; color: #3730a3; }
         .lock-icon { font-size: 0.75rem; margin-left: 4px; opacity: 0.6; }
         .text-right  { text-align: right; }
         .text-center { text-align: center; }
@@ -272,6 +249,8 @@
         .user-info strong { display: block; font-size: 0.95rem; }
         .user-info small { color: var(--text-muted); font-size: 0.8rem; }
 
+        .optgroup-label { font-weight: 700; color: var(--primary); }
+
         @media (max-width: 640px) {
             body { padding: 16px; }
             .card { padding: 18px; }
@@ -287,7 +266,6 @@
 
 <div class="container">
 
-    <!-- TOP BAR -->
     <div class="topbar">
         <div class="topbar-left">
             <h1>📊 Dashboard LPG</h1>
@@ -301,9 +279,7 @@
         </div>
         <div class="topbar-right">
             <button class="btn-info admin-only" onclick="backupNow()">📱 Backup</button>
-            <button class="btn-warning admin-only" id="btnKelolaPegawai" onclick="openUserModal()" style="display:none;">
-                👥 Pegawai
-            </button>
+            <button class="btn-warning admin-only" id="btnKelolaPegawai" onclick="openUserModal()" style="display:none;">👥 Pegawai</button>
             <button class="btn-secondary" onclick="logout()">🚪 Logout</button>
         </div>
     </div>
@@ -320,24 +296,52 @@
                 <div class="form-group">
                     <label for="jenis">Jenis Transaksi</label>
                     <select id="jenis" required>
-                        <option value="Pembelian">🛒 Pembelian (Refill)</option>
-                        <option value="Penjualan">💰 Penjualan (Terjual)</option>
+                        <optgroup label="── Transaksi ──">
+                            <option value="Pembelian">🛒 Pembelian (Refill)</option>
+                            <option value="Penjualan">💰 Penjualan (Terjual)</option>
+                        </optgroup>
+                        <optgroup label="── Catatan Arus Kas ──">
+                            <option value="Operasional">🏭 Operasional</option>
+                            <option value="Administrasi">📋 Administrasi</option>
+                            <option value="Lain-lain">📝 Lain-lain</option>
+                        </optgroup>
                     </select>
                 </div>
-                <div class="form-group">
-                    <label for="jumlahTabung">Jumlah Tabung</label>
-                    <input type="text" id="jumlahTabung" inputmode="numeric" placeholder="0" required>
-                </div>
-                <div class="form-group">
-                    <label for="hargaPerPcs">Harga /pcs (Rp)</label>
-                    <input type="text" id="hargaPerPcs" inputmode="numeric" placeholder="0" required>
-                    <small class="price-hint" id="hintHarga">💡 Harga otomatis dari transaksi terakhir</small>
-                </div>
-                <div class="form-group">
-                    <label for="totalNilai">Total Nilai (Rp)</label>
-                    <input type="text" id="totalNilai" readonly value="0">
+                <div class="form-group full-width" style="grid-column: 1 / -1;">
+                    <label for="keterangan">Keterangan (Opsional)</label>
+                    <textarea id="keterangan" placeholder="Contoh: Beli gas dari agen X / Biaya listrik bulan ini"></textarea>
                 </div>
             </div>
+
+            <!-- Mode Transaksi (Pembelian/Penjualan) -->
+            <div id="modeTransaksi">
+                <div class="form-grid" style="margin-top:16px;">
+                    <div class="form-group">
+                        <label for="jumlahTabung">Jumlah Tabung</label>
+                        <input type="text" id="jumlahTabung" inputmode="numeric" placeholder="0">
+                    </div>
+                    <div class="form-group">
+                        <label for="hargaPerPcs">Harga /pcs (Rp)</label>
+                        <input type="text" id="hargaPerPcs" inputmode="numeric" placeholder="0">
+                        <small class="price-hint" id="hintHarga">💡 Harga otomatis dari transaksi terakhir</small>
+                    </div>
+                    <div class="form-group">
+                        <label for="totalNilai">Total Nilai (Rp)</label>
+                        <input type="text" id="totalNilai" readonly value="0">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Mode Pengeluaran (Operasional/Admin/Lain-lain) -->
+            <div id="modePengeluaran" style="display:none;">
+                <div class="form-grid" style="margin-top:16px;">
+                    <div class="form-group" style="grid-column: 1 / -1;">
+                        <label for="totalPengeluaran">💸 Total Pengeluaran (Rp)</label>
+                        <input type="text" id="totalPengeluaran" inputmode="numeric" placeholder="0">
+                    </div>
+                </div>
+            </div>
+
             <button type="submit" class="btn-primary">💾 Simpan Transaksi</button>
         </form>
     </div>
@@ -347,15 +351,19 @@
         <h2 class="card-title">Ringkasan</h2>
         <div class="summary-grid">
             <div class="summary-item modal">
-                <h3>Total Modal</h3>
+                <h3>Total Modal (Pembelian)</h3>
                 <p id="sumModal">Rp 0</p>
             </div>
             <div class="summary-item income">
-                <h3>Total Income</h3>
+                <h3>Total Income (Penjualan)</h3>
                 <p id="sumIncome">Rp 0</p>
             </div>
+            <div class="summary-item expense">
+                <h3>Total Pengeluaran</h3>
+                <p id="sumExpense">Rp 0</p>
+            </div>
             <div class="summary-item profit">
-                <h3>Selisih (Income − Modal)</h3>
+                <h3>Selisih (Income − Modal − Pengeluaran)</h3>
                 <p id="sumProfit">Rp 0</p>
             </div>
             <div class="summary-item">
@@ -396,7 +404,7 @@
                 </div>
             </div>
             <button type="button" class="btn-success" onclick="exportToExcel()">📊 Export Excel</button>
-            <button type="button" class="btn-reset admin-only" onclick="resetData()">🗑️ Reset Data</button>
+            <button type="button" class="btn-reset admin-only" onclick="resetData()">🗑️ Reset</button>
         </div>
 
         <div class="table-container">
@@ -406,6 +414,7 @@
                         <th class="text-center" style="width:50px;">No</th>
                         <th>Tanggal</th>
                         <th class="text-center">Jenis</th>
+                        <th>Keterangan</th>
                         <th class="text-center">Jumlah</th>
                         <th class="text-right">Harga /pcs</th>
                         <th class="text-right">Total</th>
@@ -418,10 +427,9 @@
     </div>
 </div>
 
-<!-- TOAST -->
 <div class="toast" id="toast"></div>
 
-<!-- MODAL EDIT TRANSAKSI -->
+<!-- MODAL EDIT -->
 <div class="modal-overlay" id="editModal">
     <div class="modal">
         <div class="modal-header">
@@ -429,9 +437,7 @@
             <button class="modal-close" onclick="closeEditModal()">✕</button>
         </div>
         <div class="modal-body">
-            <div class="edit-banner" id="editBanner">
-                ⚠️ Anda sedang mengedit transaksi. Perubahan akan disimpan setelah klik "Simpan Perubahan".
-            </div>
+            <div class="edit-banner" id="editBanner">⚠️ Anda sedang mengedit transaksi.</div>
             <form id="formEdit">
                 <input type="hidden" id="editId">
                 <div class="form-grid">
@@ -440,30 +446,55 @@
                         <input type="date" id="editTanggal" required>
                     </div>
                     <div class="form-group">
-                        <label for="editJenis">Jenis Transaksi</label>
+                        <label for="editJenis">Jenis</label>
                         <select id="editJenis" required>
-                            <option value="Pembelian">🛒 Pembelian (Refill)</option>
-                            <option value="Penjualan">💰 Penjualan (Terjual)</option>
+                            <optgroup label="── Transaksi ──">
+                                <option value="Pembelian">🛒 Pembelian</option>
+                                <option value="Penjualan">💰 Penjualan</option>
+                            </optgroup>
+                            <optgroup label="── Catatan Arus Kas ──">
+                                <option value="Operasional">🏭 Operasional</option>
+                                <option value="Administrasi">📋 Administrasi</option>
+                                <option value="Lain-lain">📝 Lain-lain</option>
+                            </optgroup>
                         </select>
                     </div>
-                    <div class="form-group">
-                        <label for="editJumlahTabung">Jumlah Tabung</label>
-                        <input type="text" id="editJumlahTabung" inputmode="numeric" value="0">
+                    <div class="form-group" style="grid-column: 1 / -1;">
+                        <label for="editKeterangan">Keterangan</label>
+                        <textarea id="editKeterangan"></textarea>
                     </div>
-                    <div class="form-group">
-                        <label for="editHargaPerPcs">Harga /pcs (Rp)</label>
-                        <input type="text" id="editHargaPerPcs" inputmode="numeric" value="0">
+                </div>
+
+                <div id="editModeTransaksi">
+                    <div class="form-grid" style="margin-top:16px;">
+                        <div class="form-group">
+                            <label for="editJumlahTabung">Jumlah Tabung</label>
+                            <input type="text" id="editJumlahTabung" inputmode="numeric" value="0">
+                        </div>
+                        <div class="form-group">
+                            <label for="editHargaPerPcs">Harga /pcs (Rp)</label>
+                            <input type="text" id="editHargaPerPcs" inputmode="numeric" value="0">
+                        </div>
+                        <div class="form-group">
+                            <label for="editTotalNilai">Total (Rp)</label>
+                            <input type="text" id="editTotalNilai" readonly value="0">
+                        </div>
                     </div>
-                    <div class="form-group">
-                        <label for="editTotalNilai">Total Nilai (Rp)</label>
-                        <input type="text" id="editTotalNilai" readonly value="0">
+                </div>
+
+                <div id="editModePengeluaran" style="display:none;">
+                    <div class="form-grid" style="margin-top:16px;">
+                        <div class="form-group" style="grid-column: 1 / -1;">
+                            <label for="editTotalPengeluaran">💸 Total Pengeluaran (Rp)</label>
+                            <input type="text" id="editTotalPengeluaran" inputmode="numeric" value="0">
+                        </div>
                     </div>
                 </div>
             </form>
         </div>
         <div class="modal-footer">
             <button class="btn-secondary" onclick="closeEditModal()">Batal</button>
-            <button class="btn-primary" style="width:auto; margin-top:0;" onclick="submitEdit()">💾 Simpan Perubahan</button>
+            <button class="btn-primary" style="width:auto; margin-top:0;" onclick="submitEdit()">💾 Simpan</button>
         </div>
     </div>
 </div>
@@ -480,7 +511,6 @@
             <ul class="user-list" id="userList">
                 <li style="justify-content:center; color:var(--text-muted);">Memuat...</li>
             </ul>
-
             <h3 style="margin:20px 0 12px 0; font-size:0.95rem;">Tambah Pegawai Baru</h3>
             <form id="formUser" style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
                 <div class="form-group">
@@ -489,7 +519,7 @@
                 </div>
                 <div class="form-group">
                     <label for="newNama">Nama Lengkap</label>
-                    <input type="text" id="newNama" placeholder="contoh: Budi Santoso">
+                    <input type="text" id="newNama" placeholder="Budi Santoso">
                 </div>
                 <div class="form-group">
                     <label for="newPassword">Password</label>
@@ -508,7 +538,9 @@
     let transaksi = [];
     let currentUser = null;
     let hargaMemory = { Pembelian: 0, Penjualan: 0 };
-    const EDIT_LOCK_MS = 3600000; // 1 jam dalam milidetik
+    const EDIT_LOCK_MS = 3600000;
+    const JENIS_TRANSAKSI = ['Pembelian', 'Penjualan'];
+    const JENIS_PENGELUARAN = ['Operasional', 'Administrasi', 'Lain-lain'];
 
     // ========== INIT ==========
     document.getElementById('tanggal').valueAsDate = new Date();
@@ -522,9 +554,7 @@
             setupUI();
             loadHargaMemory();
             loadTransaksi();
-        } catch (err) {
-            window.location.href = '/login';
-        }
+        } catch (err) { window.location.href = '/login'; }
     }
 
     function setupUI() {
@@ -541,13 +571,35 @@
         });
     }
 
-    // ========== TOAST ==========
     function showToast(msg, isError = false) {
         const toast = document.getElementById('toast');
         toast.textContent = msg;
         toast.className = 'toast show' + (isError ? ' error' : '');
         setTimeout(() => toast.classList.remove('show'), 3500);
     }
+
+    // ========== MODE SWITCH (Transaksi vs Pengeluaran) ==========
+    function switchMode(jenis, prefix = '') {
+        const isPengeluaran = JENIS_PENGELUARAN.includes(jenis);
+        const modeTrans = document.getElementById(prefix + 'modeTransaksi') || document.getElementById('modeTransaksi');
+        const modePeng = document.getElementById(prefix + 'modePengeluaran') || document.getElementById('modePengeluaran');
+        if (isPengeluaran) {
+            modeTrans.style.display = 'none';
+            modePeng.style.display = 'block';
+        } else {
+            modeTrans.style.display = 'block';
+            modePeng.style.display = 'none';
+        }
+    }
+
+    document.getElementById('jenis').addEventListener('change', function() {
+        switchMode(this.value);
+        if (JENIS_TRANSAKSI.includes(this.value)) applyHargaMemory();
+    });
+
+    document.getElementById('editJenis').addEventListener('change', function() {
+        switchMode(this.value, 'edit');
+    });
 
     // ========== PRICE MEMORY ==========
     async function loadHargaMemory() {
@@ -557,53 +609,42 @@
                 hargaMemory = await res.json();
                 applyHargaMemory();
             }
-        } catch (err) {
-            console.log('Gagal load harga memory');
-        }
+        } catch (err) { console.log('Gagal load harga'); }
     }
 
     function applyHargaMemory() {
         const jenis = document.getElementById('jenis').value;
+        if (!JENIS_TRANSAKSI.includes(jenis)) return;
         const harga = hargaMemory[jenis] || 0;
-
         const inputHarga = document.getElementById('hargaPerPcs');
-        const hintHarga = document.getElementById('hintHarga');
-
+        const hint = document.getElementById('hintHarga');
         if (harga > 0) {
             inputHarga.value = formatAngkaInput(harga);
-            hintHarga.classList.add('show');
+            hint.classList.add('show');
         } else {
             inputHarga.value = '0';
-            hintHarga.classList.remove('show');
+            hint.classList.remove('show');
         }
-
         hitungTotalOtomatis();
     }
 
-    document.getElementById('jenis').addEventListener('change', applyHargaMemory);
-
-    // ========== TIME-LOCK CHECK ==========
+    // ========== TIME-LOCK ==========
     function isEditable(t) {
         if (currentUser.role === 'admin') return true;
         if (t.createdBy !== currentUser.username) return false;
         if (!t.createdAt) return false;
-
-        const createdTime = new Date(t.createdAt).getTime();
-        const now = Date.now();
-        return (now - createdTime) < EDIT_LOCK_MS;
+        return (Date.now() - new Date(t.createdAt).getTime()) < EDIT_LOCK_MS;
     }
 
     // ========== LOAD DATA ==========
     async function loadTransaksi() {
         try {
             const res = await fetch('/api/transaksi');
-            if (!res.ok) throw new Error('Gagal memuat data');
+            if (!res.ok) throw new Error('Gagal memuat');
             transaksi = await res.json();
             renderTabel();
             hitungRingkasan();
-        } catch (err) {
-            showToast('❌ Gagal memuat data: ' + err.message, true);
-        }
+        } catch (err) { showToast('❌ ' + err.message, true); }
     }
 
     // ========== FORMAT ==========
@@ -616,20 +657,28 @@
         return parseInt(String(value).replace(/\./g, '')) || 0;
     }
     function formatRupiah(angka) {
-        if (!angka && angka !== 0) return 'Rp 0';
-        return 'Rp ' + formatAngkaInput(angka);
+        if (angka === null || angka === undefined || isNaN(angka)) return 'Rp 0';
+        const abs = Math.abs(angka);
+        const formatted = 'Rp ' + formatAngkaInput(abs);
+        return angka < 0 ? '- ' + formatted : formatted;
     }
     function formatTanggal(tgl) {
         const [y, m, d] = tgl.split('-');
         return `${d}/${m}/${y}`;
+    }
+    function formatBulan(ym) {
+        const [y, m] = ym.split('-');
+        const bulan = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
+        return `${bulan[parseInt(m)-1]} ${y}`;
     }
 
     // ========== INPUT NUMBER (FORM TAMBAH) ==========
     const inputJumlah = document.getElementById('jumlahTabung');
     const inputHarga  = document.getElementById('hargaPerPcs');
     const inputTotal  = document.getElementById('totalNilai');
+    const inputPengeluaran = document.getElementById('totalPengeluaran');
 
-    [inputJumlah, inputHarga].forEach(setupNumberInput);
+    [inputJumlah, inputHarga, inputPengeluaran].forEach(setupNumberInput);
 
     function setupNumberInput(input) {
         input.addEventListener('input', function() {
@@ -652,8 +701,9 @@
     const editJumlah = document.getElementById('editJumlahTabung');
     const editHarga  = document.getElementById('editHargaPerPcs');
     const editTotal  = document.getElementById('editTotalNilai');
+    const editPengeluaran = document.getElementById('editTotalPengeluaran');
 
-    [editJumlah, editHarga].forEach(input => {
+    [editJumlah, editHarga, editPengeluaran].forEach(input => {
         input.addEventListener('input', function() {
             const pos = this.selectionStart;
             const oldLen = this.value.length;
@@ -686,34 +736,24 @@
 
     function getFilteredData() {
         const periode = filterPeriode.value;
-        const today = new Date();
-        today.setHours(0, 0, 0, 0);
-
+        const today = new Date(); today.setHours(0,0,0,0);
         return transaksi.filter(t => {
-            const tgl = new Date(t.tanggal);
-            tgl.setHours(0, 0, 0, 0);
-
+            const tgl = new Date(t.tanggal); tgl.setHours(0,0,0,0);
             switch (periode) {
-                case 'today':
-                    return tgl.getTime() === today.getTime();
+                case 'today': return tgl.getTime() === today.getTime();
                 case 'week': {
-                    const start = new Date(today);
-                    const day = start.getDay();
-                    const diff = start.getDate() - day + (day === 0 ? -6 : 1);
-                    start.setDate(diff);
-                    const end = new Date(start);
-                    end.setDate(start.getDate() + 6);
-                    return tgl >= start && tgl <= end;
+                    const s = new Date(today); const d = s.getDay();
+                    s.setDate(s.getDate() - d + (d === 0 ? -6 : 1));
+                    const e = new Date(s); e.setDate(s.getDate() + 6);
+                    return tgl >= s && tgl <= e;
                 }
-                case 'month':
-                    return tgl.getMonth() === today.getMonth() && tgl.getFullYear() === today.getFullYear();
-                case 'year':
-                    return tgl.getFullYear() === today.getFullYear();
+                case 'month': return tgl.getMonth() === today.getMonth() && tgl.getFullYear() === today.getFullYear();
+                case 'year': return tgl.getFullYear() === today.getFullYear();
                 case 'custom': {
                     const from = dateFrom.value ? new Date(dateFrom.value) : null;
                     const to = dateTo.value ? new Date(dateTo.value) : null;
-                    if (from) from.setHours(0, 0, 0, 0);
-                    if (to) to.setHours(23, 59, 59, 999);
+                    if (from) from.setHours(0,0,0,0);
+                    if (to) to.setHours(23,59,59,999);
                     if (from && to) return tgl >= from && tgl <= to;
                     if (from) return tgl >= from;
                     if (to) return tgl <= to;
@@ -724,62 +764,84 @@
         });
     }
 
-    // ========== SIMPAN TRANSAKSI BARU ==========
+    function shouldShowRekap() {
+        const periode = filterPeriode.value;
+        if (periode === 'all' || periode === 'year') return true;
+        if (periode === 'custom') {
+            const from = dateFrom.value ? new Date(dateFrom.value) : null;
+            const to = dateTo.value ? new Date(dateTo.value) : null;
+            if (from && to) return (to - from) / (1000 * 60 * 60 * 24) > 31;
+        }
+        return false;
+    }
+
+    // ========== SIMPAN ==========
     document.getElementById('formTransaksi').addEventListener('submit', async function(e) {
         e.preventDefault();
-        const jumlah = parseAngkaInput(inputJumlah.value);
-        const harga  = parseAngkaInput(inputHarga.value);
+        const jenis = document.getElementById('jenis').value;
+        const isPengeluaran = JENIS_PENGELUARAN.includes(jenis);
 
-        if (jumlah <= 0 || harga <= 0) {
-            showToast('⚠️ Jumlah dan harga harus lebih dari 0', true);
-            return;
+        let payload = {
+            tanggal: document.getElementById('tanggal').value,
+            jenis: jenis,
+            keterangan: document.getElementById('keterangan').value
+        };
+
+        if (isPengeluaran) {
+            const total = parseAngkaInput(inputPengeluaran.value);
+            if (total <= 0) { showToast('⚠️ Total pengeluaran harus > 0', true); return; }
+            payload.totalNilai = total;
+        } else {
+            const jumlah = parseAngkaInput(inputJumlah.value);
+            const harga = parseAngkaInput(inputHarga.value);
+            if (jumlah <= 0 || harga <= 0) { showToast('⚠️ Jumlah dan harga harus > 0', true); return; }
+            payload.jumlahTabung = jumlah;
+            payload.hargaPerPcs = harga;
         }
 
         try {
             const res = await fetch('/api/transaksi', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    tanggal: document.getElementById('tanggal').value,
-                    jenis: document.getElementById('jenis').value,
-                    jumlahTabung: jumlah,
-                    hargaPerPcs: harga
-                })
+                body: JSON.stringify(payload)
             });
             const data = await res.json();
-
             if (data.success) {
-                showToast('✅ Transaksi berhasil disimpan');
+                showToast('✅ Transaksi disimpan');
                 this.reset();
                 document.getElementById('tanggal').valueAsDate = new Date();
-                inputJumlah.value = '0';
-                inputTotal.value = '0';
+                inputJumlah.value = '0'; inputTotal.value = '0';
+                inputPengeluaran.value = '0';
                 loadHargaMemory();
                 await loadTransaksi();
             } else {
-                showToast('❌ ' + (data.error || 'Gagal menyimpan'), true);
+                showToast('❌ ' + (data.error || 'Gagal'), true);
             }
-        } catch (err) {
-            showToast('❌ Gagal terhubung ke server', true);
-        }
+        } catch (err) { showToast('❌ Gagal terhubung', true); }
     });
 
-    // ========== EDIT TRANSAKSI ==========
+    // ========== EDIT ==========
     function openEditModal(id) {
         const t = transaksi.find(x => x.id === id);
-        if (!t) return;
-
-        if (!isEditable(t)) {
-            showToast('🔒 Transaksi sudah di-lock atau bukan milik Anda', true);
+        if (!t || !isEditable(t)) {
+            showToast('🔒 Tidak bisa edit', true);
             return;
         }
-
         document.getElementById('editId').value = t.id;
         document.getElementById('editTanggal').value = t.tanggal;
         document.getElementById('editJenis').value = t.jenis;
-        editJumlah.value = formatAngkaInput(t.jumlahTabung);
-        editHarga.value = formatAngkaInput(t.hargaPerPcs);
-        hitungEditTotal();
+        document.getElementById('editKeterangan').value = t.keterangan || '';
+
+        const isPengeluaran = JENIS_PENGELUARAN.includes(t.jenis);
+        switchMode(t.jenis, 'edit');
+
+        if (isPengeluaran) {
+            editPengeluaran.value = formatAngkaInput(t.totalNilai);
+        } else {
+            editJumlah.value = formatAngkaInput(t.jumlahTabung);
+            editHarga.value = formatAngkaInput(t.hargaPerPcs);
+            hitungEditTotal();
+        }
 
         document.getElementById('editBanner').classList.add('show');
         document.getElementById('editModal').classList.add('active');
@@ -792,95 +854,88 @@
 
     async function submitEdit() {
         const id = parseInt(document.getElementById('editId').value);
-        const jumlah = parseAngkaInput(editJumlah.value);
-        const harga  = parseAngkaInput(editHarga.value);
+        const jenis = document.getElementById('editJenis').value;
+        const isPengeluaran = JENIS_PENGELUARAN.includes(jenis);
 
-        if (jumlah <= 0 || harga <= 0) {
-            showToast('⚠️ Jumlah dan harga harus lebih dari 0', true);
-            return;
+        let payload = {
+            tanggal: document.getElementById('editTanggal').value,
+            jenis: jenis,
+            keterangan: document.getElementById('editKeterangan').value
+        };
+
+        if (isPengeluaran) {
+            const total = parseAngkaInput(editPengeluaran.value);
+            if (total <= 0) { showToast('⚠️ Total harus > 0', true); return; }
+            payload.totalNilai = total;
+        } else {
+            const jumlah = parseAngkaInput(editJumlah.value);
+            const harga = parseAngkaInput(editHarga.value);
+            if (jumlah <= 0 || harga <= 0) { showToast('⚠️ Jumlah dan harga harus > 0', true); return; }
+            payload.jumlahTabung = jumlah;
+            payload.hargaPerPcs = harga;
         }
 
         try {
             const res = await fetch(`/api/transaksi/${id}`, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    tanggal: document.getElementById('editTanggal').value,
-                    jenis: document.getElementById('editJenis').value,
-                    jumlahTabung: jumlah,
-                    hargaPerPcs: harga
-                })
+                body: JSON.stringify(payload)
             });
             const data = await res.json();
-
             if (data.success) {
-                showToast('✅ Perubahan berhasil disimpan');
+                showToast('✅ Perubahan disimpan');
                 closeEditModal();
                 loadHargaMemory();
                 await loadTransaksi();
             } else {
-                showToast('❌ ' + (data.error || 'Gagal menyimpan perubahan'), true);
+                showToast('❌ ' + (data.error || 'Gagal'), true);
             }
-        } catch (err) {
-            showToast('❌ Gagal terhubung ke server', true);
-        }
+        } catch (err) { showToast('❌ Gagal terhubung', true); }
     }
 
     // ========== HAPUS / RESET ==========
     async function hapusData(id) {
-        if (currentUser.role !== 'admin') {
-            showToast('⛔ Hanya admin yang dapat menghapus', true);
-            return;
-        }
-        if (!confirm('Yakin ingin menghapus transaksi ini?')) return;
-
+        if (currentUser.role !== 'admin') { showToast('⛔ Hanya admin', true); return; }
+        if (!confirm('Yakin hapus?')) return;
         try {
             const res = await fetch(`/api/transaksi/${id}`, { method: 'DELETE' });
             const data = await res.json();
-            if (data.success) {
-                showToast('✅ Transaksi dihapus');
-                await loadTransaksi();
-            } else {
-                showToast('❌ ' + (data.error || 'Gagal menghapus'), true);
-            }
-        } catch (err) {
-            showToast('❌ Gagal terhubung ke server', true);
-        }
+            if (data.success) { showToast('✅ Dihapus'); await loadTransaksi(); }
+            else showToast('❌ ' + (data.error || 'Gagal'), true);
+        } catch (err) { showToast('❌ Gagal', true); }
     }
 
     async function resetData() {
-        if (currentUser.role !== 'admin') {
-            showToast('⛔ Hanya admin yang dapat mereset', true);
-            return;
-        }
-        if (!confirm('⚠️ PERINGATAN: Semua data akan dihapus permanen. Lanjutkan?')) return;
-
+        if (currentUser.role !== 'admin') { showToast('⛔ Hanya admin', true); return; }
+        if (!confirm('⚠️ Semua data dihapus?')) return;
         try {
             const res = await fetch('/api/transaksi', { method: 'DELETE' });
             const data = await res.json();
-            if (data.success) {
-                showToast('✅ Semua data telah direset');
-                await loadTransaksi();
-            } else {
-                showToast('❌ Gagal mereset data', true);
-            }
-        } catch (err) {
-            showToast('❌ Gagal terhubung ke server', true);
-        }
+            if (data.success) { showToast('✅ Direset'); await loadTransaksi(); }
+            else showToast('❌ Gagal', true);
+        } catch (err) { showToast('❌ Gagal', true); }
     }
 
-    // ========== BACKUP MANUAL ==========
     async function backupNow() {
         if (currentUser.role !== 'admin') return;
-        showToast('📱 Mengirim backup ke Telegram...');
-
+        showToast('📱 Mengirim backup...');
         try {
             const res = await fetch('/api/backup-now', { method: 'POST' });
             const data = await res.json();
-            if (data.success) showToast('✅ Backup berhasil dikirim');
-            else showToast('❌ ' + (data.error || 'Backup gagal'), true);
-        } catch (err) {
-            showToast('❌ Gagal terhubung ke server', true);
+            if (data.success) showToast('✅ Backup terkirim');
+            else showToast('❌ ' + (data.error || 'Gagal'), true);
+        } catch (err) { showToast('❌ Gagal', true); }
+    }
+
+    // ========== BADGE HELPER ==========
+    function getBadgeClass(jenis) {
+        switch (jenis) {
+            case 'Pembelian': return 'badge-beli';
+            case 'Penjualan': return 'badge-jual';
+            case 'Operasional': return 'badge-op';
+            case 'Administrasi': return 'badge-admin';
+            case 'Lain-lain': return 'badge-lain';
+            default: return 'badge-lain';
         }
     }
 
@@ -891,25 +946,20 @@
         const data = getFilteredData();
 
         if (data.length === 0) {
-            tbody.innerHTML = `<tr><td colspan="7" class="empty-state">📭 Tidak ada data pada periode ini.</td></tr>`;
+            tbody.innerHTML = `<tr><td colspan="8" class="empty-state">📭 Tidak ada data.</td></tr>`;
             return;
         }
 
-        const dataUrut = [...data].sort(
-            (a, b) => new Date(b.tanggal) - new Date(a.tanggal) || b.id - a.id
-        );
+        const dataUrut = [...data].sort((a, b) => new Date(b.tanggal) - new Date(a.tanggal) || b.id - a.id);
 
         dataUrut.forEach((t, i) => {
-            const badge = t.jenis === 'Pembelian' ? 'badge-beli' : 'badge-jual';
             const canEdit = isEditable(t);
             const isLocked = !canEdit && currentUser.role === 'pegawai';
+            const isPengeluaran = JENIS_PENGELUARAN.includes(t.jenis);
 
             let editBtn = '';
-            if (canEdit) {
-                editBtn = `<button class="btn-edit" onclick="openEditModal(${t.id})">✏️ Edit</button>`;
-            } else if (currentUser.role === 'pegawai') {
-                editBtn = `<button class="btn-edit" disabled title="Transaksi sudah di-lock">🔒</button>`;
-            }
+            if (canEdit) editBtn = `<button class="btn-edit" onclick="openEditModal(${t.id})">✏️</button>`;
+            else if (currentUser.role === 'pegawai') editBtn = `<button class="btn-edit" disabled>🔒</button>`;
 
             const hapusBtn = currentUser.role === 'admin'
                 ? `<button class="btn-danger" onclick="hapusData(${t.id})">🗑️</button>`
@@ -919,101 +969,148 @@
                 <tr>
                     <td class="text-center">${i + 1}</td>
                     <td>${formatTanggal(t.tanggal)}</td>
-                    <td class="text-center"><span class="badge ${badge}">${t.jenis}</span>${isLocked ? '<span class="lock-icon">🔒</span>' : ''}</td>
-                    <td class="text-center">${t.jumlahTabung}</td>
-                    <td class="text-right">${formatRupiah(t.hargaPerPcs)}</td>
+                    <td class="text-center"><span class="badge ${getBadgeClass(t.jenis)}">${t.jenis}</span>${isLocked ? '<span class="lock-icon">🔒</span>' : ''}</td>
+                    <td style="max-width:180px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;" title="${(t.keterangan || '-').replace(/"/g, '&quot;')}">${t.keterangan || '-'}</td>
+                    <td class="text-center">${isPengeluaran ? '-' : t.jumlahTabung}</td>
+                    <td class="text-right">${isPengeluaran ? '-' : formatRupiah(t.hargaPerPcs)}</td>
                     <td class="text-right"><strong>${formatRupiah(t.totalNilai)}</strong></td>
-                    <td class="text-center" style="display:flex; gap:6px; justify-content:center;">
-                        ${editBtn}
-                        ${hapusBtn}
-                    </td>
+                    <td class="text-center" style="display:flex; gap:6px; justify-content:center;">${editBtn}${hapusBtn}</td>
                 </tr>`;
         });
     }
 
-    // Update status lock setiap 30 detik
     setInterval(() => {
-        if (currentUser && currentUser.role === 'pegawai') {
-            renderTabel();
-        }
+        if (currentUser && currentUser.role === 'pegawai') renderTabel();
     }, 30000);
 
     // ========== RINGKASAN ==========
     function hitungRingkasan() {
         const data = getFilteredData();
-        let totalModal = 0, totalIncome = 0, totalRefill = 0, totalTerjual = 0;
+        let totalModal = 0, totalIncome = 0, totalExpense = 0, totalRefill = 0, totalTerjual = 0;
 
         data.forEach(t => {
-            if (t.jenis === 'Pembelian') {
-                totalModal += t.totalNilai;
-                totalRefill += t.jumlahTabung;
-            } else {
-                totalIncome += t.totalNilai;
-                totalTerjual += t.jumlahTabung;
-            }
+            if (t.jenis === 'Pembelian') { totalModal += t.totalNilai; totalRefill += t.jumlahTabung; }
+            else if (t.jenis === 'Penjualan') { totalIncome += t.totalNilai; totalTerjual += t.jumlahTabung; }
+            else { totalExpense += t.totalNilai; }
         });
 
-        document.getElementById('sumModal').textContent   = formatRupiah(totalModal);
-        document.getElementById('sumIncome').textContent  = formatRupiah(totalIncome);
-        document.getElementById('sumProfit').textContent  = formatRupiah(totalIncome - totalModal);
-        document.getElementById('sumRefill').textContent  = totalRefill;
+        const selisih = totalIncome - totalModal - totalExpense;
+
+        document.getElementById('sumModal').textContent = formatRupiah(totalModal);
+        document.getElementById('sumIncome').textContent = formatRupiah(totalIncome);
+        document.getElementById('sumExpense').textContent = formatRupiah(totalExpense);
+
+        const profitEl = document.getElementById('sumProfit');
+        profitEl.textContent = formatRupiah(selisih);
+        profitEl.classList.toggle('negative', selisih < 0);
+
+        document.getElementById('sumRefill').textContent = totalRefill;
         document.getElementById('sumTerjual').textContent = totalTerjual;
     }
 
     // ========== EXPORT EXCEL ==========
     function exportToExcel() {
         const data = getFilteredData();
-        if (data.length === 0) {
-            showToast('⚠️ Tidak ada data untuk diekspor', true);
-            return;
-        }
+        if (data.length === 0) { showToast('⚠️ Tidak ada data', true); return; }
 
-        const dataUrut = [...data].sort(
-            (a, b) => new Date(a.tanggal) - new Date(b.tanggal) || a.id - b.id
-        );
+        const dataUrut = [...data].sort((a, b) => new Date(a.tanggal) - new Date(b.tanggal) || a.id - b.id);
+        const showRekap = shouldShowRekap();
 
+        // Sheet 1: Detail Transaksi
         const wsData = [
             ['LAPORAN TRANSAKSI LPG'],
             ['Periode: ' + filterPeriode.options[filterPeriode.selectedIndex].text],
             ['Diekspor: ' + new Date().toLocaleString('id-ID')],
             [],
-            ['No', 'Tanggal', 'Jenis Transaksi', 'Jumlah Tabung', 'Harga /pcs (Rp)', 'Total Nilai (Rp)']
+            ['No', 'Tanggal', 'Jenis', 'Keterangan', 'Jumlah Tabung', 'Harga /pcs', 'Total (Rp)']
         ];
 
         dataUrut.forEach((t, i) => {
-            wsData.push([i + 1, formatTanggal(t.tanggal), t.jenis, t.jumlahTabung, t.hargaPerPcs, t.totalNilai]);
+            const isPengeluaran = JENIS_PENGELUARAN.includes(t.jenis);
+            wsData.push([
+                i + 1, formatTanggal(t.tanggal), t.jenis, t.keterangan || '-',
+                isPengeluaran ? '-' : t.jumlahTabung,
+                isPengeluaran ? '-' : t.hargaPerPcs,
+                t.totalNilai
+            ]);
         });
 
-        let totalModal = 0, totalIncome = 0, totalRefill = 0, totalTerjual = 0;
+        let totalModal = 0, totalIncome = 0, totalExpense = 0, totalRefill = 0, totalTerjual = 0;
         data.forEach(t => {
-            if (t.jenis === 'Pembelian') {
-                totalModal += t.totalNilai; totalRefill += t.jumlahTabung;
-            } else {
-                totalIncome += t.totalNilai; totalTerjual += t.jumlahTabung;
-            }
+            if (t.jenis === 'Pembelian') { totalModal += t.totalNilai; totalRefill += t.jumlahTabung; }
+            else if (t.jenis === 'Penjualan') { totalIncome += t.totalNilai; totalTerjual += t.jumlahTabung; }
+            else totalExpense += t.totalNilai;
         });
 
         wsData.push([]);
-        wsData.push(['', '', '', '', 'TOTAL MODAL (Pembelian):', totalModal]);
-        wsData.push(['', '', '', '', 'TOTAL INCOME (Penjualan):', totalIncome]);
-        wsData.push(['', '', '', '', 'SELISIH (Profit):', totalIncome - totalModal]);
+        wsData.push(['', '', '', '', '', 'TOTAL MODAL:', totalModal]);
+        wsData.push(['', '', '', '', '', 'TOTAL INCOME:', totalIncome]);
+        wsData.push(['', '', '', '', '', 'TOTAL PENGELUARAN:', totalExpense]);
+        wsData.push(['', '', '', '', '', 'SELISIH:', totalIncome - totalModal - totalExpense]);
         wsData.push([]);
-        wsData.push(['', '', '', 'Total Tabung Refill:', totalRefill, '']);
-        wsData.push(['', '', '', 'Total Tabung Terjual:', totalTerjual, '']);
+        wsData.push(['', '', '', 'Tabung Refill:', totalRefill, '']);
+        wsData.push(['', '', '', 'Tabung Terjual:', totalTerjual, '']);
 
         const ws = XLSX.utils.aoa_to_sheet(wsData);
-        ws['!cols'] = [{ wch: 5 }, { wch: 12 }, { wch: 18 }, { wch: 14 }, { wch: 18 }, { wch: 20 }];
-        ws['!merges'] = [{ s: { r: 0, c: 0 }, e: { r: 0, c: 5 } }];
+        ws['!cols'] = [{ wch: 5 }, { wch: 12 }, { wch: 15 }, { wch: 28 }, { wch: 14 }, { wch: 18 }, { wch: 20 }];
+        ws['!merges'] = [{ s: { r: 0, c: 0 }, e: { r: 0, c: 6 } }];
 
         const wb = XLSX.utils.book_new();
-        XLSX.utils.book_append_sheet(wb, ws, 'Transaksi LPG');
+        XLSX.utils.book_append_sheet(wb, ws, 'Detail Transaksi');
+
+        // Sheet 2: Rekap Bulanan (jika perlu)
+        if (showRekap) {
+            const rekap = {};
+            data.forEach(t => {
+                const bulan = t.tanggal.substring(0, 7);
+                if (!rekap[bulan]) {
+                    rekap[bulan] = { modal: 0, income: 0, expense: 0, refill: 0, terjual: 0, count: 0 };
+                }
+                rekap[bulan].count++;
+                if (t.jenis === 'Pembelian') { rekap[bulan].modal += t.totalNilai; rekap[bulan].refill += t.jumlahTabung; }
+                else if (t.jenis === 'Penjualan') { rekap[bulan].income += t.totalNilai; rekap[bulan].terjual += t.jumlahTabung; }
+                else rekap[bulan].expense += t.totalNilai;
+            });
+
+            const bulanUrut = Object.keys(rekap).sort();
+            const rekapData = [
+                ['REKAP BULANAN TRANSAKSI LPG'],
+                ['Periode: ' + filterPeriode.options[filterPeriode.selectedIndex].text],
+                [],
+                ['Bulan', 'Jml Transaksi', 'Total Pembelian', 'Total Penjualan', 'Total Pengeluaran', 'Selisih', 'Tabung Refill', 'Tabung Terjual']
+            ];
+
+            let grandModal = 0, grandIncome = 0, grandExpense = 0, grandRefill = 0, grandTerjual = 0, grandCount = 0;
+
+            bulanUrut.forEach(b => {
+                const r = rekap[b];
+                const selisih = r.income - r.modal - r.expense;
+                grandModal += r.modal; grandIncome += r.income; grandExpense += r.expense;
+                grandRefill += r.refill; grandTerjual += r.terjual; grandCount += r.count;
+                rekapData.push([
+                    formatBulan(b), r.count, r.modal, r.income, r.expense, selisih, r.refill, r.terjual
+                ]);
+            });
+
+            rekapData.push([]);
+            rekapData.push(['TOTAL', grandCount, grandModal, grandIncome, grandExpense, grandIncome - grandModal - grandExpense, grandRefill, grandTerjual]);
+
+            const wsRekap = XLSX.utils.aoa_to_sheet(rekapData);
+            wsRekap['!cols'] = [
+                { wch: 18 }, { wch: 14 }, { wch: 18 }, { wch: 18 },
+                { wch: 20 }, { wch: 18 }, { wch: 15 }, { wch: 15 }
+            ];
+            wsRekap['!merges'] = [{ s: { r: 0, c: 0 }, e: { r: 0, c: 7 } }];
+            XLSX.utils.book_append_sheet(wb, wsRekap, 'Rekap Bulanan');
+        }
+
         XLSX.writeFile(wb, `Laporan_LPG_${new Date().toISOString().slice(0,10)}.xlsx`);
-        showToast('✅ File Excel berhasil diunduh');
+        showToast('✅ File Excel diunduh' + (showRekap ? ' (+ Rekap Bulanan)' : ''));
     }
 
     // ========== LOGOUT ==========
     async function logout() {
-        if (!confirm('Yakin ingin logout?')) return;
+        if (!confirm('Yakin logout?')) return;
         await fetch('/api/logout', { method: 'POST' });
         window.location.href = '/login';
     }
@@ -1024,72 +1121,52 @@
         document.getElementById('userModal').classList.add('active');
         await loadUsers();
     }
-    function closeUserModal() {
-        document.getElementById('userModal').classList.remove('active');
-    }
+    function closeUserModal() { document.getElementById('userModal').classList.remove('active'); }
     async function loadUsers() {
         const list = document.getElementById('userList');
         try {
             const res = await fetch('/api/users');
             const data = await res.json();
             if (data.pegawai.length === 0) {
-                list.innerHTML = '<li style="justify-content:center; color:var(--text-muted);">Belum ada pegawai terdaftar.</li>';
+                list.innerHTML = '<li style="justify-content:center; color:var(--text-muted);">Belum ada pegawai.</li>';
                 return;
             }
             list.innerHTML = data.pegawai.map(u => `
                 <li>
-                    <div class="user-info">
-                        <strong>${u.nama}</strong>
-                        <small>@${u.username}</small>
-                    </div>
+                    <div class="user-info"><strong>${u.nama}</strong><small>@${u.username}</small></div>
                     <button class="btn-danger" onclick="deleteUser('${u.username}')">Hapus</button>
                 </li>
             `).join('');
-        } catch (err) {
-            list.innerHTML = '<li style="color:var(--danger);">Gagal memuat data.</li>';
-        }
+        } catch (err) { list.innerHTML = '<li style="color:var(--danger);">Gagal memuat.</li>'; }
     }
     document.getElementById('formUser').addEventListener('submit', async function(e) {
         e.preventDefault();
-        const username = document.getElementById('newUsername').value.trim().toLowerCase();
-        const nama = document.getElementById('newNama').value.trim();
-        const password = document.getElementById('newPassword').value;
-
         try {
             const res = await fetch('/api/users', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ username, nama, password })
+                body: JSON.stringify({
+                    username: document.getElementById('newUsername').value.trim().toLowerCase(),
+                    nama: document.getElementById('newNama').value.trim(),
+                    password: document.getElementById('newPassword').value
+                })
             });
             const data = await res.json();
-            if (data.success) {
-                showToast('✅ Pegawai ditambahkan');
-                this.reset();
-                loadUsers();
-            } else {
-                showToast('❌ ' + (data.error || 'Gagal'), true);
-            }
-        } catch (err) {
-            showToast('❌ Gagal terhubung ke server', true);
-        }
+            if (data.success) { showToast('✅ Ditambahkan'); this.reset(); loadUsers(); }
+            else showToast('❌ ' + (data.error || 'Gagal'), true);
+        } catch (err) { showToast('❌ Gagal', true); }
     });
     async function deleteUser(username) {
-        if (!confirm(`Hapus pegawai @${username}?`)) return;
+        if (!confirm(`Hapus @${username}?`)) return;
         try {
             const res = await fetch(`/api/users/${username}`, { method: 'DELETE' });
             const data = await res.json();
             if (data.success) loadUsers();
-            else showToast('❌ Gagal menghapus', true);
-        } catch (err) {
-            showToast('❌ Gagal terhubung ke server', true);
-        }
+            else showToast('❌ Gagal', true);
+        } catch (err) { showToast('❌ Gagal', true); }
     }
-    document.getElementById('userModal').addEventListener('click', function(e) {
-        if (e.target === this) closeUserModal();
-    });
-    document.getElementById('editModal').addEventListener('click', function(e) {
-        if (e.target === this) closeEditModal();
-    });
+    document.getElementById('userModal').addEventListener('click', function(e) { if (e.target === this) closeUserModal(); });
+    document.getElementById('editModal').addEventListener('click', function(e) { if (e.target === this) closeEditModal(); });
 </script>
 
 </body>
