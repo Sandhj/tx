@@ -156,11 +156,22 @@ def logout():
     session.clear()
     return jsonify({'success': True})
 
+# ========== FIX: Endpoint /api/me dengan fallback aman ==========
 @app.route('/api/me')
 def me():
     if 'username' not in session:
         return jsonify({'error': 'Not logged in'}), 401
-    return jsonify({'username': session['username'], 'role': session['role'], 'nama': session.get('nama')})
+    
+    # Fallback aman: nama tidak pernah null/undefined
+    nama = session.get('nama') or session.get('username') or 'User'
+    role = session.get('role') or 'pegawai'
+    username = session.get('username') or ''
+    
+    return jsonify({
+        'username': username,
+        'role': role,
+        'nama': nama
+    })
 
 # ============ USER MANAGEMENT ============
 @app.route('/api/users', methods=['GET'])
@@ -185,7 +196,11 @@ def create_user():
     users = load_json(USERS_FILE)
     if any(u['username'] == username for u in users['pegawai']):
         return jsonify({'error': 'Username sudah terdaftar'}), 400
-    users['pegawai'].append({'username': username, 'password': generate_password_hash(password), 'nama': nama or username})
+    users['pegawai'].append({
+        'username': username,
+        'password': generate_password_hash(password),
+        'nama': nama or username
+    })
     save_json(USERS_FILE, users)
     return jsonify({'success': True})
 
