@@ -278,9 +278,9 @@
         <div class="topbar-left">
             <h1>🐔 Transaksi Ayam KUB</h1>
             <div class="user-badge">
-                <div class="avatar" id="userAvatar">A</div>
+                <div class="avatar" id="userAvatar">?</div>
                 <div>
-                    <div id="userName" style="font-size:0.85rem;">Loading...</div>
+                    <div id="userName" style="font-size:0.85rem;">Memuat...</div>
                     <span class="role-tag" id="userRole">-</span>
                 </div>
             </div>
@@ -321,7 +321,6 @@
                 </div>
             </div>
 
-            <!-- Mode Transaksi (Penjualan/Retur) -->
             <div id="modeTransaksi">
                 <div class="sub-section jantan" style="margin-top:16px;">
                     <h4>🐓 Data Ayam Jantan</h4>
@@ -361,7 +360,6 @@
                 </div>
             </div>
 
-            <!-- Mode Pengeluaran -->
             <div id="modePengeluaran" style="display:none;">
                 <div class="form-grid" style="margin-top:16px;">
                     <div class="form-group" style="grid-column: 1 / -1;">
@@ -467,3 +465,840 @@
             <h2>✏️ Edit Transaksi</h2>
             <button class="modal-close" onclick="closeEditModal()">✕</button>
         </div>
+        <div class="modal-body">
+            <div class="edit-banner" id="editBanner">⚠️ Anda sedang mengedit transaksi.</div>
+            <form id="formEdit">
+                <input type="hidden" id="editId">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="editTanggal">Tanggal</label>
+                        <input type="date" id="editTanggal" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="editJenis">Jenis</label>
+                        <select id="editJenis" required>
+                            <optgroup label="── Transaksi Ayam ──">
+                                <option value="Penjualan">🐓 Penjualan</option>
+                                <option value="Retur">🔄 Retur</option>
+                            </optgroup>
+                            <optgroup label="── Catatan Arus Kas ──">
+                                <option value="Operasional">🏭 Operasional</option>
+                                <option value="Administrasi">📋 Administrasi</option>
+                                <option value="Lain-lain">📝 Lain-lain</option>
+                            </optgroup>
+                        </select>
+                    </div>
+                    <div class="form-group" style="grid-column: 1 / -1;">
+                        <label for="editKeterangan">Keterangan</label>
+                        <textarea id="editKeterangan"></textarea>
+                    </div>
+                </div>
+
+                <div id="editModeTransaksi">
+                    <div class="sub-section jantan" style="margin-top:16px;">
+                        <h4>🐓 Data Ayam Jantan</h4>
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="editJmlJantan">Jumlah (Ekor)</label>
+                                <input type="text" id="editJmlJantan" inputmode="numeric" value="0">
+                            </div>
+                            <div class="form-group">
+                                <label for="editHargaJantan">Harga / Ekor (Rp)</label>
+                                <input type="text" id="editHargaJantan" inputmode="numeric" value="0">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="sub-section betina">
+                        <h4>🐔 Data Ayam Betina</h4>
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="editJmlBetina">Jumlah (Ekor)</label>
+                                <input type="text" id="editJmlBetina" inputmode="numeric" value="0">
+                            </div>
+                            <div class="form-group">
+                                <label for="editHargaBetina">Harga / Ekor (Rp)</label>
+                                <input type="text" id="editHargaBetina" inputmode="numeric" value="0">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-grid">
+                        <div class="form-group" style="grid-column: 1 / -1;">
+                            <label for="editTotal">💰 Total</label>
+                            <input type="text" id="editTotal" readonly value="0">
+                        </div>
+                    </div>
+                </div>
+
+                <div id="editModePengeluaran" style="display:none;">
+                    <div class="form-grid" style="margin-top:16px;">
+                        <div class="form-group" style="grid-column: 1 / -1;">
+                            <label for="editTotalPengeluaran">💸 Total Pengeluaran (Rp)</label>
+                            <input type="text" id="editTotalPengeluaran" inputmode="numeric" value="0">
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="modal-footer">
+            <button class="btn-secondary" onclick="closeEditModal()">Batal</button>
+            <button class="btn-primary" style="width:auto; margin-top:0;" onclick="submitEdit()">💾 Simpan</button>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL PEGAWAI -->
+<div class="modal-overlay" id="userModal">
+    <div class="modal">
+        <div class="modal-header">
+            <h2>👥 Kelola Pegawai</h2>
+            <button class="modal-close" onclick="closeUserModal()">✕</button>
+        </div>
+        <div class="modal-body">
+            <h3 style="margin:0 0 12px 0; font-size:0.95rem;">Daftar Pegawai</h3>
+            <ul class="user-list" id="userList">
+                <li style="justify-content:center; color:var(--text-muted);">Memuat...</li>
+            </ul>
+            <h3 style="margin:20px 0 12px 0; font-size:0.95rem;">Tambah Pegawai Baru</h3>
+            <form id="formUser" style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+                <div class="form-group">
+                    <label for="newUsername">Username</label>
+                    <input type="text" id="newUsername" placeholder="contoh: budi" required>
+                </div>
+                <div class="form-group">
+                    <label for="newNama">Nama Lengkap</label>
+                    <input type="text" id="newNama" placeholder="Budi Santoso">
+                </div>
+                <div class="form-group">
+                    <label for="newPassword">Password</label>
+                    <input type="text" id="newPassword" placeholder="min. 4 karakter" required>
+                </div>
+                <div class="form-group" style="justify-content:end;">
+                    <button type="submit" class="btn-primary" style="margin-top:0;">➕ Tambah</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    // ========== STATE ==========
+    let transaksi = [];
+    let currentUser = null;
+    let hargaMemory = { Penjualan: {jantan: 0, betina: 0}, Retur: {jantan: 0, betina: 0} };
+    const EDIT_LOCK_MS = 3600000;
+    const JENIS_TRANSAKSI = ['Penjualan', 'Retur'];
+    const JENIS_PENGELUARAN = ['Operasional', 'Administrasi', 'Lain-lain'];
+
+    // ========== INIT ==========
+    document.getElementById('tanggal').valueAsDate = new Date();
+    checkAuth();
+
+    // ========== FIX: checkAuth dengan validasi data user ==========
+    async function checkAuth() {
+        try {
+            const res = await fetch('/api/me');
+            
+            if (!res.ok) {
+                console.warn('Auth gagal, status:', res.status);
+                window.location.href = '/login';
+                return;
+            }
+            
+            const data = await res.json();
+            
+            // Validasi data user
+            if (!data || !data.username || !data.role) {
+                console.error('Data user tidak valid:', data);
+                window.location.href = '/login';
+                return;
+            }
+            
+            currentUser = {
+                username: data.username,
+                role: data.role,
+                nama: data.nama || data.username || 'User'  // Fallback aman
+            };
+            
+            console.log('✅ Login berhasil:', currentUser);
+            
+            // Setup UI (dengan try-catch)
+            try {
+                setupUI();
+            } catch (uiErr) {
+                console.error('❌ Error setupUI:', uiErr);
+                showToast('❌ Gagal memuat info user', true);
+            }
+            
+            // Load data (tidak blocking, dengan error handling)
+            loadHargaMemory().catch(err => console.warn('Gagal load harga:', err));
+            loadTransaksi().catch(err => {
+                console.error('Gagal load transaksi:', err);
+                showToast('❌ Gagal memuat data transaksi', true);
+            });
+            
+        } catch (err) {
+            console.error('❌ Auth error:', err);
+            window.location.href = '/login';
+        }
+    }
+
+    // ========== FIX: setupUI dengan fallback aman ==========
+    function setupUI() {
+        // Fallback aman untuk nama user
+        const nama = currentUser.nama || currentUser.username || 'User';
+        const initial = (nama.charAt(0) || '?').toUpperCase();
+        const isAdmin = currentUser.role === 'admin';
+        
+        // Update info user di topbar
+        const userNameEl = document.getElementById('userName');
+        const userRoleEl = document.getElementById('userRole');
+        const userAvatarEl = document.getElementById('userAvatar');
+        
+        if (userNameEl) userNameEl.textContent = nama;
+        if (userRoleEl) {
+            userRoleEl.textContent = currentUser.role;
+            userRoleEl.className = 'role-tag ' + (isAdmin ? 'role-admin' : 'role-pegawai');
+        }
+        if (userAvatarEl) userAvatarEl.textContent = initial;
+        
+        // Tampilkan/sembunyikan tombol admin
+        const btnPegawai = document.getElementById('btnKelolaPegawai');
+        if (btnPegawai) btnPegawai.style.display = isAdmin ? 'inline-flex' : 'none';
+        
+        document.querySelectorAll('.admin-only').forEach(el => {
+            el.style.display = isAdmin ? 'inline-flex' : 'none';
+        });
+    }
+
+    function showToast(msg, isError = false) {
+        const toast = document.getElementById('toast');
+        if (!toast) return;
+        toast.textContent = msg;
+        toast.className = 'toast show' + (isError ? ' error' : '');
+        setTimeout(() => toast.classList.remove('show'), 3500);
+    }
+
+    // ========== MODE SWITCH ==========
+    function switchMode(jenis, prefix = '') {
+        const isPengeluaran = JENIS_PENGELUARAN.includes(jenis);
+        const modeTrans = document.getElementById(prefix ? prefix + 'ModeTransaksi' : 'modeTransaksi');
+        const modePeng = document.getElementById(prefix ? prefix + 'ModePengeluaran' : 'modePengeluaran');
+        if (modeTrans) modeTrans.style.display = isPengeluaran ? 'none' : 'block';
+        if (modePeng) modePeng.style.display = isPengeluaran ? 'block' : 'none';
+    }
+
+    document.getElementById('jenis').addEventListener('change', function() {
+        switchMode(this.value);
+        if (JENIS_TRANSAKSI.includes(this.value)) applyHargaMemory();
+    });
+
+    document.getElementById('editJenis').addEventListener('change', function() {
+        switchMode(this.value, 'edit');
+    });
+
+    // ========== PRICE MEMORY ==========
+    async function loadHargaMemory() {
+        try {
+            const res = await fetch('/api/harga');
+            if (res.ok) {
+                hargaMemory = await res.json();
+                applyHargaMemory();
+            }
+        } catch (err) { console.warn('Gagal load harga:', err); }
+    }
+
+    function applyHargaMemory() {
+        const jenis = document.getElementById('jenis').value;
+        if (!JENIS_TRANSAKSI.includes(jenis)) return;
+        const harga = hargaMemory[jenis] || {jantan: 0, betina: 0};
+
+        const inputHargaJantan = document.getElementById('hargaJantan');
+        const inputHargaBetina = document.getElementById('hargaBetina');
+        const hintJantan = document.getElementById('hintHargaJantan');
+        const hintBetina = document.getElementById('hintHargaBetina');
+
+        if (harga.jantan > 0) {
+            inputHargaJantan.value = formatAngkaInput(harga.jantan);
+            hintJantan.classList.add('show');
+        } else { inputHargaJantan.value = '0'; hintJantan.classList.remove('show'); }
+
+        if (harga.betina > 0) {
+            inputHargaBetina.value = formatAngkaInput(harga.betina);
+            hintBetina.classList.add('show');
+        } else { inputHargaBetina.value = '0'; hintBetina.classList.remove('show'); }
+
+        hitungTotalOtomatis();
+    }
+
+    // ========== TIME-LOCK ==========
+    function isEditable(t) {
+        if (!currentUser) return false;
+        if (currentUser.role === 'admin') return true;
+        if (t.createdBy !== currentUser.username) return false;
+        if (!t.createdAt) return false;
+        return (Date.now() - new Date(t.createdAt).getTime()) < EDIT_LOCK_MS;
+    }
+
+    // ========== LOAD DATA ==========
+    async function loadTransaksi() {
+        try {
+            const res = await fetch('/api/ayam');
+            if (!res.ok) throw new Error('Gagal memuat data');
+            transaksi = await res.json();
+            renderTabel();
+            hitungRingkasan();
+        } catch (err) {
+            console.error('Load transaksi error:', err);
+            showToast('❌ ' + err.message, true);
+        }
+    }
+
+    // ========== FORMAT ==========
+    function formatAngkaInput(value) {
+        const num = String(value).replace(/\D/g, '');
+        if (!num) return '';
+        return num.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+    }
+    function parseAngkaInput(value) {
+        return parseInt(String(value).replace(/\./g, '')) || 0;
+    }
+    function formatRupiah(angka) {
+        if (angka === null || angka === undefined || isNaN(angka)) return 'Rp 0';
+        const abs = Math.abs(angka);
+        const formatted = 'Rp ' + formatAngkaInput(abs);
+        return angka < 0 ? '- ' + formatted : formatted;
+    }
+    function formatTanggal(tgl) {
+        if (!tgl) return '-';
+        const [y, m, d] = tgl.split('-');
+        return `${d}/${m}/${y}`;
+    }
+    function formatBulan(ym) {
+        const [y, m] = ym.split('-');
+        const bulan = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
+        return `${bulan[parseInt(m)-1]} ${y}`;
+    }
+
+    // ========== INPUT NUMBER (FORM TAMBAH) ==========
+    const inputJmlJantan   = document.getElementById('jmlJantan');
+    const inputHargaJantan = document.getElementById('hargaJantan');
+    const inputJmlBetina   = document.getElementById('jmlBetina');
+    const inputHargaBetina = document.getElementById('hargaBetina');
+    const inputTotal       = document.getElementById('totalNilai');
+    const inputPengeluaran = document.getElementById('totalPengeluaran');
+
+    [inputJmlJantan, inputHargaJantan, inputJmlBetina, inputHargaBetina, inputPengeluaran].forEach(setupNumberInput);
+
+    function setupNumberInput(input) {
+        if (!input) return;
+        input.addEventListener('input', function() {
+            const pos = this.selectionStart;
+            const oldLen = this.value.length;
+            this.value = formatAngkaInput(this.value);
+            const newLen = this.value.length;
+            this.setSelectionRange(pos + (newLen - oldLen), pos + (newLen - oldLen));
+            hitungTotalOtomatis();
+        });
+    }
+
+    function hitungTotalOtomatis() {
+        const jmlJ = parseAngkaInput(inputJmlJantan.value);
+        const hrgJ = parseAngkaInput(inputHargaJantan.value);
+        const jmlB = parseAngkaInput(inputJmlBetina.value);
+        const hrgB = parseAngkaInput(inputHargaBetina.value);
+        inputTotal.value = formatAngkaInput((jmlJ * hrgJ) + (jmlB * hrgB));
+    }
+
+    // ========== INPUT NUMBER (FORM EDIT) ==========
+    const editJmlJantan   = document.getElementById('editJmlJantan');
+    const editHargaJantan = document.getElementById('editHargaJantan');
+    const editJmlBetina   = document.getElementById('editJmlBetina');
+    const editHargaBetina = document.getElementById('editHargaBetina');
+    const editTotal       = document.getElementById('editTotal');
+    const editPengeluaran = document.getElementById('editTotalPengeluaran');
+
+    [editJmlJantan, editHargaJantan, editJmlBetina, editHargaBetina, editPengeluaran].forEach(input => {
+        if (!input) return;
+        input.addEventListener('input', function() {
+            const pos = this.selectionStart;
+            const oldLen = this.value.length;
+            this.value = formatAngkaInput(this.value);
+            const newLen = this.value.length;
+            this.setSelectionRange(pos + (newLen - oldLen), pos + (newLen - oldLen));
+            hitungEditTotal();
+        });
+    });
+
+    function hitungEditTotal() {
+        const jmlJ = parseAngkaInput(editJmlJantan.value);
+        const hrgJ = parseAngkaInput(editHargaJantan.value);
+        const jmlB = parseAngkaInput(editJmlBetina.value);
+        const hrgB = parseAngkaInput(editHargaBetina.value);
+        editTotal.value = formatAngkaInput((jmlJ * hrgJ) + (jmlB * hrgB));
+    }
+
+    // ========== FILTER ==========
+    const filterPeriode = document.getElementById('filterPeriode');
+    const dateRange = document.getElementById('dateRange');
+    const dateFrom = document.getElementById('dateFrom');
+    const dateTo = document.getElementById('dateTo');
+
+    filterPeriode.addEventListener('change', function() {
+        dateRange.classList.toggle('active', this.value === 'custom');
+        renderTabel();
+        hitungRingkasan();
+    });
+    dateFrom.addEventListener('change', () => { renderTabel(); hitungRingkasan(); });
+    dateTo.addEventListener('change', () => { renderTabel(); hitungRingkasan(); });
+
+    function getFilteredData() {
+        const periode = filterPeriode.value;
+        const today = new Date(); today.setHours(0,0,0,0);
+        return transaksi.filter(t => {
+            if (!t.tanggal) return false;
+            const tgl = new Date(t.tanggal); tgl.setHours(0,0,0,0);
+            switch (periode) {
+                case 'today': return tgl.getTime() === today.getTime();
+                case 'week': {
+                    const s = new Date(today); const d = s.getDay();
+                    s.setDate(s.getDate() - d + (d === 0 ? -6 : 1));
+                    const e = new Date(s); e.setDate(s.getDate() + 6);
+                    return tgl >= s && tgl <= e;
+                }
+                case 'month': return tgl.getMonth() === today.getMonth() && tgl.getFullYear() === today.getFullYear();
+                case 'year': return tgl.getFullYear() === today.getFullYear();
+                case 'custom': {
+                    const from = dateFrom.value ? new Date(dateFrom.value) : null;
+                    const to = dateTo.value ? new Date(dateTo.value) : null;
+                    if (from) from.setHours(0,0,0,0);
+                    if (to) to.setHours(23,59,59,999);
+                    if (from && to) return tgl >= from && tgl <= to;
+                    if (from) return tgl >= from;
+                    if (to) return tgl <= to;
+                    return true;
+                }
+                default: return true;
+            }
+        });
+    }
+
+    function shouldShowRekap() {
+        const periode = filterPeriode.value;
+        if (periode === 'all' || periode === 'year') return true;
+        if (periode === 'custom') {
+            const from = dateFrom.value ? new Date(dateFrom.value) : null;
+            const to = dateTo.value ? new Date(dateTo.value) : null;
+            if (from && to) return (to - from) / (1000 * 60 * 60 * 24) > 31;
+        }
+        return false;
+    }
+
+    // ========== SIMPAN ==========
+    document.getElementById('formTransaksi').addEventListener('submit', async function(e) {
+        e.preventDefault();
+        const jenis = document.getElementById('jenis').value;
+        const isPengeluaran = JENIS_PENGELUARAN.includes(jenis);
+
+        let payload = {
+            tanggal: document.getElementById('tanggal').value,
+            jenis: jenis,
+            keterangan: document.getElementById('keterangan').value
+        };
+
+        if (isPengeluaran) {
+            const total = parseAngkaInput(inputPengeluaran.value);
+            if (total <= 0) { showToast('⚠️ Total harus > 0', true); return; }
+            payload.totalNilai = total;
+        } else {
+            const jmlJ = parseAngkaInput(inputJmlJantan.value);
+            const hrgJ = parseAngkaInput(inputHargaJantan.value);
+            const jmlB = parseAngkaInput(inputJmlBetina.value);
+            const hrgB = parseAngkaInput(inputHargaBetina.value);
+            if (jmlJ <= 0 && jmlB <= 0) { showToast('⚠️ Jumlah harus > 0', true); return; }
+            payload.jmlJantan = jmlJ; payload.hargaJantan = hrgJ;
+            payload.jmlBetina = jmlB; payload.hargaBetina = hrgB;
+        }
+
+        try {
+            const res = await fetch('/api/ayam', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+            const data = await res.json();
+            if (data.success) {
+                showToast('✅ Transaksi disimpan');
+                this.reset();
+                document.getElementById('tanggal').valueAsDate = new Date();
+                inputJmlJantan.value = '0'; inputJmlBetina.value = '0';
+                inputTotal.value = '0'; inputPengeluaran.value = '0';
+                loadHargaMemory();
+                await loadTransaksi();
+            } else {
+                showToast('❌ ' + (data.error || 'Gagal'), true);
+            }
+        } catch (err) { showToast('❌ Gagal terhubung', true); }
+    });
+
+    // ========== EDIT ==========
+    function openEditModal(id) {
+        const t = transaksi.find(x => x.id === id);
+        if (!t || !isEditable(t)) { showToast('🔒 Tidak bisa edit', true); return; }
+
+        document.getElementById('editId').value = t.id;
+        document.getElementById('editTanggal').value = t.tanggal;
+        document.getElementById('editJenis').value = t.jenis;
+        document.getElementById('editKeterangan').value = t.keterangan || '';
+
+        const isPengeluaran = JENIS_PENGELUARAN.includes(t.jenis);
+        switchMode(t.jenis, 'edit');
+
+        if (isPengeluaran) {
+            editPengeluaran.value = formatAngkaInput(t.total);
+        } else {
+            editJmlJantan.value = formatAngkaInput(t.jmlJantan || 0);
+            editHargaJantan.value = formatAngkaInput(t.hargaJantan || 0);
+            editJmlBetina.value = formatAngkaInput(t.jmlBetina || 0);
+            editHargaBetina.value = formatAngkaInput(t.hargaBetina || 0);
+            hitungEditTotal();
+        }
+
+        document.getElementById('editBanner').classList.add('show');
+        document.getElementById('editModal').classList.add('active');
+    }
+
+    function closeEditModal() {
+        document.getElementById('editModal').classList.remove('active');
+        document.getElementById('editBanner').classList.remove('show');
+    }
+
+    async function submitEdit() {
+        const id = parseInt(document.getElementById('editId').value);
+        const jenis = document.getElementById('editJenis').value;
+        const isPengeluaran = JENIS_PENGELUARAN.includes(jenis);
+
+        let payload = {
+            tanggal: document.getElementById('editTanggal').value,
+            jenis: jenis,
+            keterangan: document.getElementById('editKeterangan').value
+        };
+
+        if (isPengeluaran) {
+            const total = parseAngkaInput(editPengeluaran.value);
+            if (total <= 0) { showToast('⚠️ Total harus > 0', true); return; }
+            payload.totalNilai = total;
+        } else {
+            const jmlJ = parseAngkaInput(editJmlJantan.value);
+            const hrgJ = parseAngkaInput(editHargaJantan.value);
+            const jmlB = parseAngkaInput(editJmlBetina.value);
+            const hrgB = parseAngkaInput(editHargaBetina.value);
+            if (jmlJ <= 0 && jmlB <= 0) { showToast('⚠️ Jumlah harus > 0', true); return; }
+            payload.jmlJantan = jmlJ; payload.hargaJantan = hrgJ;
+            payload.jmlBetina = jmlB; payload.hargaBetina = hrgB;
+        }
+
+        try {
+            const res = await fetch(`/api/ayam/${id}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+            const data = await res.json();
+            if (data.success) {
+                showToast('✅ Perubahan disimpan');
+                closeEditModal();
+                loadHargaMemory();
+                await loadTransaksi();
+            } else {
+                showToast('❌ ' + (data.error || 'Gagal'), true);
+            }
+        } catch (err) { showToast('❌ Gagal terhubung', true); }
+    }
+
+    // ========== HAPUS / RESET ==========
+    async function hapusData(id) {
+        if (currentUser.role !== 'admin') { showToast('⛔ Hanya admin', true); return; }
+        if (!confirm('Yakin hapus?')) return;
+        try {
+            const res = await fetch(`/api/ayam/${id}`, { method: 'DELETE' });
+            const data = await res.json();
+            if (data.success) { showToast('✅ Dihapus'); await loadTransaksi(); }
+            else showToast('❌ ' + (data.error || 'Gagal'), true);
+        } catch (err) { showToast('❌ Gagal', true); }
+    }
+
+    async function resetData() {
+        if (currentUser.role !== 'admin') { showToast('⛔ Hanya admin', true); return; }
+        if (!confirm('⚠️ Semua data dihapus?')) return;
+        try {
+            const res = await fetch('/api/ayam', { method: 'DELETE' });
+            const data = await res.json();
+            if (data.success) { showToast('✅ Direset'); await loadTransaksi(); }
+            else showToast('❌ Gagal', true);
+        } catch (err) { showToast('❌ Gagal', true); }
+    }
+
+    async function backupNow() {
+        if (currentUser.role !== 'admin') return;
+        showToast('📱 Mengirim backup...');
+        try {
+            const res = await fetch('/api/backup-now', { method: 'POST' });
+            const data = await res.json();
+            if (data.success) showToast('✅ Backup terkirim');
+            else showToast('❌ ' + (data.error || 'Gagal'), true);
+        } catch (err) { showToast('❌ Gagal', true); }
+    }
+
+    // ========== BADGE HELPER ==========
+    function getBadgeClass(jenis) {
+        switch (jenis) {
+            case 'Penjualan': return 'badge-jual';
+            case 'Retur': return 'badge-retur';
+            case 'Operasional': return 'badge-op';
+            case 'Administrasi': return 'badge-admin';
+            case 'Lain-lain': return 'badge-lain';
+            default: return 'badge-lain';
+        }
+    }
+
+    // ========== RENDER TABEL ==========
+    function renderTabel() {
+        const tbody = document.getElementById('tableBody');
+        if (!tbody) return;
+        tbody.innerHTML = '';
+        const data = getFilteredData();
+
+        if (data.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="10" class="empty-state">📭 Tidak ada data.</td></tr>`;
+            return;
+        }
+
+        const dataUrut = [...data].sort((a, b) => new Date(b.tanggal) - new Date(a.tanggal) || b.id - a.id);
+
+        dataUrut.forEach((t, i) => {
+            const canEdit = isEditable(t);
+            const isLocked = !canEdit && currentUser.role === 'pegawai';
+            const isPengeluaran = JENIS_PENGELUARAN.includes(t.jenis);
+
+            let editBtn = '';
+            if (canEdit) editBtn = `<button class="btn-edit" onclick="openEditModal(${t.id})">✏️</button>`;
+            else if (currentUser.role === 'pegawai') editBtn = `<button class="btn-edit" disabled>🔒</button>`;
+
+            const hapusBtn = currentUser.role === 'admin'
+                ? `<button class="btn-danger" onclick="hapusData(${t.id})">🗑️</button>`
+                : '';
+
+            tbody.innerHTML += `
+                <tr>
+                    <td class="text-center">${i + 1}</td>
+                    <td>${formatTanggal(t.tanggal)}</td>
+                    <td class="text-center"><span class="badge ${getBadgeClass(t.jenis)}">${t.jenis}</span>${isLocked ? '<span class="lock-icon">🔒</span>' : ''}</td>
+                    <td style="max-width:150px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;" title="${(t.keterangan || '-').replace(/"/g, '&quot;')}">${t.keterangan || '-'}</td>
+                    <td class="text-center">${isPengeluaran ? '-' : (t.jmlJantan || 0)}</td>
+                    <td class="text-right">${isPengeluaran ? '-' : formatRupiah(t.hargaJantan || 0)}</td>
+                    <td class="text-center">${isPengeluaran ? '-' : (t.jmlBetina || 0)}</td>
+                    <td class="text-right">${isPengeluaran ? '-' : formatRupiah(t.hargaBetina || 0)}</td>
+                    <td class="text-right"><strong>${formatRupiah(t.total || 0)}</strong></td>
+                    <td class="text-center" style="display:flex; gap:6px; justify-content:center;">${editBtn}${hapusBtn}</td>
+                </tr>`;
+        });
+    }
+
+    setInterval(() => {
+        if (currentUser && currentUser.role === 'pegawai') renderTabel();
+    }, 30000);
+
+    // ========== RINGKASAN ==========
+    function hitungRingkasan() {
+        const data = getFilteredData();
+        let totalPenjualan = 0, totalRetur = 0, totalExpense = 0, totalEkor = 0;
+
+        data.forEach(t => {
+            if (t.jenis === 'Penjualan') { totalPenjualan += (t.total || 0); totalEkor += (t.jmlJantan || 0) + (t.jmlBetina || 0); }
+            else if (t.jenis === 'Retur') { totalRetur += (t.total || 0); totalEkor += (t.jmlJantan || 0) + (t.jmlBetina || 0); }
+            else totalExpense += (t.total || 0);
+        });
+
+        const selisih = totalPenjualan - totalRetur - totalExpense;
+
+        document.getElementById('sumPenjualan').textContent = formatRupiah(totalPenjualan);
+        document.getElementById('sumRetur').textContent = formatRupiah(totalRetur);
+        document.getElementById('sumExpense').textContent = formatRupiah(totalExpense);
+
+        const profitEl = document.getElementById('sumProfit');
+        profitEl.textContent = formatRupiah(selisih);
+        profitEl.classList.toggle('negative', selisih < 0);
+
+        document.getElementById('sumEkor').textContent = totalEkor + ' Ekor';
+        document.getElementById('sumTransaksi').textContent = data.length;
+    }
+
+    // ========== EXPORT EXCEL ==========
+    function exportToExcel() {
+        const data = getFilteredData();
+        if (data.length === 0) { showToast('⚠️ Tidak ada data', true); return; }
+
+        const dataUrut = [...data].sort((a, b) => new Date(a.tanggal) - new Date(b.tanggal) || a.id - b.id);
+        const showRekap = shouldShowRekap();
+
+        const wsData = [
+            ['LAPORAN TRANSAKSI AYAM KUB'],
+            ['Periode: ' + filterPeriode.options[filterPeriode.selectedIndex].text],
+            ['Diekspor: ' + new Date().toLocaleString('id-ID')],
+            [],
+            ['No', 'Tanggal', 'Jenis', 'Keterangan', 'Jml Jantan', 'Harga Jantan', 'Jml Betina', 'Harga Betina', 'Total (Rp)']
+        ];
+
+        dataUrut.forEach((t, i) => {
+            const isPengeluaran = JENIS_PENGELUARAN.includes(t.jenis);
+            wsData.push([
+                i + 1, formatTanggal(t.tanggal), t.jenis, t.keterangan || '-',
+                isPengeluaran ? '-' : (t.jmlJantan || 0),
+                isPengeluaran ? '-' : (t.hargaJantan || 0),
+                isPengeluaran ? '-' : (t.jmlBetina || 0),
+                isPengeluaran ? '-' : (t.hargaBetina || 0),
+                t.total || 0
+            ]);
+        });
+
+        let totalPenjualan = 0, totalRetur = 0, totalExpense = 0, totalEkor = 0;
+        data.forEach(t => {
+            if (t.jenis === 'Penjualan') { totalPenjualan += (t.total || 0); totalEkor += (t.jmlJantan || 0) + (t.jmlBetina || 0); }
+            else if (t.jenis === 'Retur') { totalRetur += (t.total || 0); totalEkor += (t.jmlJantan || 0) + (t.jmlBetina || 0); }
+            else totalExpense += (t.total || 0);
+        });
+
+        wsData.push([]);
+        wsData.push(['', '', '', '', '', '', '', 'TOTAL PENJUALAN:', totalPenjualan]);
+        wsData.push(['', '', '', '', '', '', '', 'TOTAL RETUR:', totalRetur]);
+        wsData.push(['', '', '', '', '', '', '', 'TOTAL PENGELUARAN:', totalExpense]);
+        wsData.push(['', '', '', '', '', '', '', 'SELISIH:', totalPenjualan - totalRetur - totalExpense]);
+        wsData.push([]);
+        wsData.push(['', '', '', '', '', '', '', 'TOTAL EKOR:', totalEkor]);
+        wsData.push(['', '', '', '', '', '', '', 'JUMLAH TRANSAKSI:', data.length]);
+
+        const ws = XLSX.utils.aoa_to_sheet(wsData);
+        ws['!cols'] = [
+            { wch: 5 }, { wch: 12 }, { wch: 14 }, { wch: 25 },
+            { wch: 10 }, { wch: 15 }, { wch: 10 }, { wch: 15 }, { wch: 18 }
+        ];
+        ws['!merges'] = [{ s: { r: 0, c: 0 }, e: { r: 0, c: 8 } }];
+
+        const wb = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb, ws, 'Detail Transaksi');
+
+        if (showRekap) {
+            const rekap = {};
+            data.forEach(t => {
+                const bulan = t.tanggal.substring(0, 7);
+                if (!rekap[bulan]) {
+                    rekap[bulan] = { penjualan: 0, retur: 0, expense: 0, ekor: 0, count: 0 };
+                }
+                rekap[bulan].count++;
+                if (t.jenis === 'Penjualan') { rekap[bulan].penjualan += (t.total || 0); rekap[bulan].ekor += (t.jmlJantan || 0) + (t.jmlBetina || 0); }
+                else if (t.jenis === 'Retur') { rekap[bulan].retur += (t.total || 0); rekap[bulan].ekor += (t.jmlJantan || 0) + (t.jmlBetina || 0); }
+                else rekap[bulan].expense += (t.total || 0);
+            });
+
+            const bulanUrut = Object.keys(rekap).sort();
+            const rekapData = [
+                ['REKAP BULANAN TRANSAKSI AYAM KUB'],
+                ['Periode: ' + filterPeriode.options[filterPeriode.selectedIndex].text],
+                [],
+                ['Bulan', 'Jml Transaksi', 'Total Penjualan', 'Total Retur', 'Total Pengeluaran', 'Selisih', 'Total Ekor']
+            ];
+
+            let gPenjualan = 0, gRetur = 0, gExpense = 0, gEkor = 0, gCount = 0;
+
+            bulanUrut.forEach(b => {
+                const r = rekap[b];
+                const selisih = r.penjualan - r.retur - r.expense;
+                gPenjualan += r.penjualan; gRetur += r.retur; gExpense += r.expense;
+                gEkor += r.ekor; gCount += r.count;
+                rekapData.push([formatBulan(b), r.count, r.penjualan, r.retur, r.expense, selisih, r.ekor]);
+            });
+
+            rekapData.push([]);
+            rekapData.push(['TOTAL', gCount, gPenjualan, gRetur, gExpense, gPenjualan - gRetur - gExpense, gEkor]);
+
+            const wsRekap = XLSX.utils.aoa_to_sheet(rekapData);
+            wsRekap['!cols'] = [
+                { wch: 18 }, { wch: 14 }, { wch: 18 }, { wch: 15 },
+                { wch: 20 }, { wch: 18 }, { wch: 14 }
+            ];
+            wsRekap['!merges'] = [{ s: { r: 0, c: 0 }, e: { r: 0, c: 6 } }];
+            XLSX.utils.book_append_sheet(wb, wsRekap, 'Rekap Bulanan');
+        }
+
+        XLSX.writeFile(wb, `Laporan_AyamKUB_${new Date().toISOString().slice(0,10)}.xlsx`);
+        showToast('✅ File Excel diunduh' + (showRekap ? ' (+ Rekap Bulanan)' : ''));
+    }
+
+    // ========== LOGOUT ==========
+    async function logout() {
+        if (!confirm('Yakin logout?')) return;
+        try {
+            await fetch('/api/logout', { method: 'POST' });
+        } catch (err) {
+            console.warn('Logout error:', err);
+        }
+        window.location.href = '/login';
+    }
+
+    // ========== MODAL PEGAWAI ==========
+    async function openUserModal() {
+        if (currentUser.role !== 'admin') return;
+        document.getElementById('userModal').classList.add('active');
+        await loadUsers();
+    }
+    function closeUserModal() { document.getElementById('userModal').classList.remove('active'); }
+    async function loadUsers() {
+        const list = document.getElementById('userList');
+        if (!list) return;
+        try {
+            const res = await fetch('/api/users');
+            const data = await res.json();
+            if (data.pegawai.length === 0) {
+                list.innerHTML = '<li style="justify-content:center; color:var(--text-muted);">Belum ada pegawai.</li>';
+                return;
+            }
+            list.innerHTML = data.pegawai.map(u => `
+                <li>
+                    <div class="user-info"><strong>${u.nama || u.username}</strong><small>@${u.username}</small></div>
+                    <button class="btn-danger" onclick="deleteUser('${u.username}')">Hapus</button>
+                </li>
+            `).join('');
+        } catch (err) { list.innerHTML = '<li style="color:var(--danger);">Gagal memuat.</li>'; }
+    }
+    document.getElementById('formUser').addEventListener('submit', async function(e) {
+        e.preventDefault();
+        try {
+            const res = await fetch('/api/users', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    username: document.getElementById('newUsername').value.trim().toLowerCase(),
+                    nama: document.getElementById('newNama').value.trim(),
+                    password: document.getElementById('newPassword').value
+                })
+            });
+            const data = await res.json();
+            if (data.success) { showToast('✅ Ditambahkan'); this.reset(); loadUsers(); }
+            else showToast('❌ ' + (data.error || 'Gagal'), true);
+        } catch (err) { showToast('❌ Gagal', true); }
+    });
+    async function deleteUser(username) {
+        if (!confirm(`Hapus @${username}?`)) return;
+        try {
+            const res = await fetch(`/api/users/${username}`, { method: 'DELETE' });
+            const data = await res.json();
+            if (data.success) loadUsers();
+            else showToast('❌ Gagal', true);
+        } catch (err) { showToast('❌ Gagal', true); }
+    }
+    document.getElementById('userModal').addEventListener('click', function(e) { if (e.target === this) closeUserModal(); });
+    document.getElementById('editModal').addEventListener('click', function(e) { if (e.target === this) closeEditModal(); });
+</script>
+
+</body>
+</html>
