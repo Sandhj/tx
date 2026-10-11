@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Ayam KUB</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #f59e0b;
+            --primary-dark: #d97706;
+            --primary-light: #fbbf24;
+            --bg: #fffbeb;
+            --card: #ffffff;
+            --text: #1c1917;
+            --text-muted: #78716c;
+            --border: #fde68a;
+        }
+        * { box-sizing: border-box; }
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 50%, #d97706 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            margin: 0;
+            -webkit-font-smoothing: antialiased;
+        }
+        .login-card {
+            background: var(--card);
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(217, 119, 6, 0.3);
+            width: 100%;
+            max-width: 420px;
+        }
+        .logo { text-align: center; margin-bottom: 30px; }
+        .logo-icon { font-size: 4rem; margin-bottom: 10px; }
+        .logo h1 {
+            font-size: 1.6rem; font-weight: 800; margin: 0 0 6px 0;
+            color: var(--text); letter-spacing: -0.5px;
+        }
+        .logo p { color: var(--text-muted); margin: 0; font-size: 0.9rem; }
+        .form-group { margin-bottom: 18px; }
+        label {
+            display: block; font-weight: 600; margin-bottom: 6px;
+            font-size: 0.8rem; color: var(--text-muted);
+            text-transform: uppercase; letter-spacing: 0.5px;
+        }
+        input {
+            width: 100%; padding: 12px 14px;
+            border: 1.5px solid var(--border); border-radius: 10px;
+            font-size: 0.95rem; font-family: inherit; font-weight: 500;
+            color: var(--text); transition: all 0.2s;
+        }
+        input:focus {
+            outline: none; border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(245, 158, 11, 0.15);
+        }
+        .btn-login {
+            width: 100%; padding: 13px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            color: white; border: none; border-radius: 10px;
+            font-size: 1rem; font-weight: 700; font-family: inherit;
+            cursor: pointer; transition: all 0.2s; margin-top: 10px;
+            box-shadow: 0 4px 12px rgba(245, 158, 11, 0.4);
+        }
+        .btn-login:hover { transform: translateY(-1px); box-shadow: 0 6px 16px rgba(245, 158, 11, 0.5); }
+        .btn-login:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+        .alert {
+            padding: 12px 14px; border-radius: 10px;
+            font-size: 0.88rem; font-weight: 500; margin-bottom: 18px; display: none;
+        }
+        .alert.show { display: block; }
+        .alert-error { background: #fee2e2; color: #991b1b; border: 1px solid #fecaca; }
+        .footer-text {
+            text-align: center; margin-top: 24px;
+            font-size: 0.78rem; color: var(--text-muted);
+        }
+    </style>
+</head>
+<body>
+
+<div class="login-card">
+    <div class="logo">
+        <div class="logo-icon">🐔</div>
+        <h1>Transaksi Ayam KUB</h1>
+        <p>Sistem Pencatatan Penjualan Harian</p>
+    </div>
+
+    <div class="alert alert-error" id="alertError"></div>
+
+    <form id="loginForm">
+        <div class="form-group">
+            <label for="username">Username</label>
+            <input type="text" id="username" placeholder="Masukkan username" autocomplete="username" required>
+        </div>
+        <div class="form-group">
+            <label for="password">Password</label>
+            <input type="password" id="password" placeholder="Masukkan password" autocomplete="current-password">
+        </div>
+        <button type="submit" class="btn-login" id="btnLogin">Masuk</button>
+    </form>
+
+    <div class="footer-text">
+        Hubungi administrator untuk mendapatkan akun akses.
+    </div>
+</div>
+
+<script>
+    const alertError = document.getElementById('alertError');
+    const btnLogin = document.getElementById('btnLogin');
+
+    document.getElementById('loginForm').addEventListener('submit', async function(e) {
+        e.preventDefault();
+        alertError.classList.remove('show');
+        btnLogin.disabled = true;
+        btnLogin.textContent = 'Memproses...';
+
+        const username = document.getElementById('username').value.trim();
+        const password = document.getElementById('password').value;
+
+        try {
+            const res = await fetch('/api/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ username, password })
+            });
+            const data = await res.json();
+
+            if (data.success) {
+                btnLogin.textContent = 'Berhasil! Mengalihkan...';
+                setTimeout(() => window.location.href = '/dashboard', 500);
+            } else {
+                alertError.textContent = '❌ ' + (data.error || 'Login gagal');
+                alertError.classList.add('show');
+                btnLogin.disabled = false;
+                btnLogin.textContent = 'Masuk';
+            }
+        } catch (err) {
+            alertError.textContent = '❌ Gagal terhubung ke server';
+            alertError.classList.add('show');
+            btnLogin.disabled = false;
+            btnLogin.textContent = 'Masuk';
+        }
+    });
+</script>
+
+</body>
+</html>
