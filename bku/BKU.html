@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Buku Keuangan</title>
+    <style>
+        :root { --primary: #0d6efd; --success: #198754; --danger: #dc3545; --secondary: #6c757d; --dark: #343a40; --bg: #f4f7f6; --card-bg: #ffffff; --text: #333333; --text-muted: #6c757d; }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background-color: var(--bg); color: var(--text); line-height: 1.5; padding-bottom: 30px; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 15px; }
+        header { text-align: center; margin-bottom: 20px; padding: 15px; background: var(--primary); color: white; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        header h1 { font-size: 1.5rem; margin-bottom: 5px; }
+        header p { font-size: 0.9rem; opacity: 0.9; }
+        .card { background: var(--card-bg); border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); margin-bottom: 20px; overflow: hidden; }
+        .card-header { padding: 15px; font-weight: 600; font-size: 1.1rem; border-bottom: 1px solid #eee; background: #f8f9fa; }
+        .card-body { padding: 15px; }
+        .form-grid { display: grid; grid-template-columns: 1fr; gap: 15px; }
+        @media (min-width: 600px) { .form-grid { grid-template-columns: repeat(2, 1fr); } }
+        @media (min-width: 992px) { .form-grid { grid-template-columns: repeat(3, 1fr); } }
+        .form-group label { display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 6px; color: var(--text-muted); }
+        .form-control { width: 100%; padding: 12px; border: 1.5px solid #ddd; border-radius: 8px; font-size: 1rem; transition: all 0.2s; background: #fff; }
+        .form-control:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(13,110,253,0.15); }
+        .netto-display { grid-column: 1 / -1; background: #e7f1ff; padding: 15px; border-radius: 8px; text-align: center; border: 1px dashed var(--primary); }
+        .netto-display .label { font-size: 0.9rem; color: var(--primary); font-weight: 600; }
+        .netto-display .value { font-size: 1.5rem; font-weight: 700; color: var(--primary); margin-top: 5px; }
+        .netto-negative .value { color: var(--danger) !important; }
+        .netto-negative { background: #f8d7da !important; border-color: var(--danger) !important; }
+        .netto-negative .label { color: var(--danger) !important; }
+        .btn-group { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 20px; }
+        @media (min-width: 600px) { .btn-group { grid-template-columns: repeat(4, 1fr); } }
+        .btn { padding: 12px; border: none; border-radius: 8px; font-weight: 600; font-size: 0.9rem; cursor: pointer; transition: transform 0.1s; color: white; display: flex; align-items: center; justify-content: center; gap: 5px; text-decoration: none; }
+        .btn:active { transform: scale(0.97); }
+        .btn-primary { background: var(--primary); } .btn-success { background: var(--success); } .btn-danger { background: var(--danger); } .btn-warning { background: #ffc107; color: #333; } .btn-dark { background: var(--dark); }
+        .table-responsive { overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+        th { background: var(--primary); color: white; padding: 12px 8px; text-align: left; font-weight: 600; white-space: nowrap; }
+        td { padding: 12px 8px; border-bottom: 1px solid #eee; }
+        tr:hover { background: #f8f9fa; }
+        tfoot td { font-weight: 700; background: #f1f3f5; border-top: 2px solid #dee2e6; }
+        .text-right { text-align: right; } .text-center { text-align: center; }
+        .badge-aksi { background: var(--danger); color: white; border: none; padding: 6px 10px; border-radius: 6px; cursor: pointer; font-size: 0.8rem; }
+        @media (max-width: 767px) {
+            table, thead, tbody, th, td, tr { display: block; }
+            thead tr { display: none; }
+            tbody tr { margin-bottom: 15px; border: 1px solid #ddd; border-radius: 10px; padding: 10px; background: #fff; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+            tbody td { border: none; position: relative; padding-left: 45%; text-align: right; min-height: 30px; display: flex; align-items: center; justify-content: flex-end; }
+            tbody td:before { content: attr(data-label); position: absolute; left: 10px; width: 40%; padding-right: 10px; white-space: nowrap; text-align: left; font-weight: 600; color: var(--text-muted); font-size: 0.85rem; }
+            tbody td:last-child { justify-content: center; padding-left: 10px; margin-top: 10px; border-top: 1px dashed #eee; }
+            tbody td:last-child:before { display: none; }
+            tfoot tr { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; background: transparent; }
+            tfoot td { background: #f8f9fa; border-radius: 8px; padding: 10px; display: block; text-align: center !important; border: none; }
+            tfoot td:before { position: static; display: block; font-size: 0.8rem; color: var(--text-muted); margin-bottom: 4px; width: 100%; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1>📊 BUKU KEUANGAN</h1>
+        <p>Sistem Pencatatan Penerimaan, Penarikan dan Pengeluaran</p>
+    </header>
+    
+    <div class="card">
+        <div class="card-header">Input Transaksi</div>
+        <div class="card-body">
+            <form id="transactionForm" onsubmit="return false;">
+                <div class="form-grid">
+                    <div class="form-group"><label>Tanggal</label><input type="date" class="form-control" id="tanggal" required></div>
+                    <div class="form-group"><label>Uraian</label><input type="text" class="form-control" id="uraian" placeholder="Deskripsi transaksi" required></div>
+                    <div class="form-group"><label>Nomor Bukti</label><input type="text" class="form-control" id="nomor_bukti" placeholder="No. Kwitansi/Invoice"></div>
+                    <div class="form-group"><label>Penerimaan</label><input type="text" inputmode="numeric" class="form-control" id="penerimaan" value="0"></div>
+                    <div class="form-group"><label>Penarikan</label><input type="text" inputmode="numeric" class="form-control" id="penarikan" value="0"></div>
+                    <div class="form-group"><label>Pengeluaran</label><input type="text" inputmode="numeric" class="form-control" id="pengeluaran" value="0"></div>
+                    <div class="form-group"><label>Pajak PPN (Opsional)</label><input type="text" inputmode="numeric" class="form-control" id="ppn" value="0"></div>
+                    <div class="form-group"><label>Pajak PPh 22 (Opsional)</label><input type="text" inputmode="numeric" class="form-control" id="pph22" value="0"></div>
+                    <div class="netto-display" id="nettoDisplay">
+                        <div class="label">NETTO TRANSAKSI (Penerimaan - Pengeluaran - Pajak)</div>
+                        <div class="value" id="nettoValue">Rp 0</div>
+                    </div>
+                </div>
+                <div class="btn-group">
+                    <button type="button" class="btn btn-primary" onclick="addTransaction()">+ Tambah</button>
+                    <button type="button" class="btn btn-dark" onclick="downloadJSON()">📥 Download JSON</button>
+                    <button type="button" class="btn btn-success" onclick="exportExcel()">📊 Excel</button>
+                    <button type="button" class="btn btn-warning" onclick="resetForm()">↻ Reset</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header">Daftar Transaksi (<span id="countTx">0</span> Transaksi)</div>
+        <div class="card-body table-responsive">
+            <table>
+                <thead>
+                    <tr>
+                        <th class="text-center">No</th><th>Tanggal</th><th>Uraian</th><th>No. Bukti</th>
+                        <th class="text-right">Penerimaan</th><th class="text-right">Penarikan</th><th class="text-right">Pengeluaran</th>
+                        <th class="text-right">PPN</th><th class="text-right">PPh 22</th><th class="text-right">Netto</th><th class="text-center">Aksi</th>
+                    </tr>
+                </thead>
+                <tbody id="transactionTableBody"></tbody>
+                <tfoot>
+                    <tr>
+                        <td data-label="Total Penerimaan" id="totalPenerimaan">Rp 0</td>
+                        <td data-label="Total Penarikan" id="totalPenarikan">Rp 0</td>
+                        <td data-label="Total Pengeluaran" id="totalPengeluaran">Rp 0</td>
+                        <td data-label="Total PPN" id="totalPPN">Rp 0</td>
+                        <td data-label="Total PPh 22" id="totalPPh">Rp 0</td>
+                        <td data-label="TOTAL NETTO" id="totalNetto">Rp 0</td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script>
+    let transactions = [];
+    const numericInputs = ['penerimaan', 'penarikan', 'pengeluaran', 'ppn', 'pph22'];
+    
+    numericInputs.forEach(id => {
+        document.getElementById(id).addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\D/g, '');
+            e.target.value = value ? parseInt(value, 10).toLocaleString('id-ID') : '';
+            calculateLiveNetto();
+        });
+    });
+
+    const getRawNumber = (id) => {
+        const val = document.getElementById(id).value.replace(/\./g, '');
+        return val ? parseFloat(val) : 0;
+    };
+
+    const formatRupiah = (number) => 'Rp ' + (number || 0).toLocaleString('id-ID');
+
+    function calculateLiveNetto() {
+        const netto = getRawNumber('penerimaan') - getRawNumber('penarikan') - getRawNumber('pengeluaran') - getRawNumber('ppn') - getRawNumber('pph22');
+        const display = document.getElementById('nettoDisplay');
+        document.getElementById('nettoValue').innerText = formatRupiah(netto);
+        display.classList.toggle('netto-negative', netto < 0);
+    }
+
+    async function loadData() {
+        try {
+            const response = await fetch('/api/data');
+            transactions = await response.json();
+            renderTable();
+        } catch (error) { console.error("Gagal memuat data:", error); }
+    }
+
+    async function saveData(action, detail) {
+        try {
+            await fetch('/api/data', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ action, detail, transactions })
+            });
+        } catch (error) { alert("Gagal menyimpan ke server."); }
+    }
+
+    function downloadJSON() {
+        const a = document.createElement('a');
+        a.href = '/api/download';
+        a.download = 'bku_data.json';
+        document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    }
+
+    function addTransaction() {
+        const tanggal = document.getElementById('tanggal').value;
+        const uraian = document.getElementById('uraian').value;
+        if (!tanggal || !uraian) return alert("Tanggal dan Uraian wajib diisi!");
+
+        // PERUBAHAN: Key nomor_bukti diubah menjadi nomorBukti
+        const newTrans = {
+            tanggal, uraian,
+            nomorBukti: document.getElementById('nomor_bukti').value, 
+            penerimaan: getRawNumber('penerimaan'),
+            penarikan: getRawNumber('penarikan'),
+            pengeluaran: getRawNumber('pengeluaran'),
+            ppn: getRawNumber('ppn'),
+            pph22: getRawNumber('pph22')
+        };
+
+        transactions.push(newTrans);
+        saveData('Tambah Transaksi', newTrans);
+        renderTable();
+        resetForm();
+    }
+
+    function deleteTransaction(index) {
+        if (confirm("Yakin ingin menghapus transaksi ini?")) {
+            const deleted = transactions.splice(index, 1)[0];
+            saveData('Hapus Transaksi', deleted);
+            renderTable();
+        }
+    }
+
+    function renderTable() {
+        const tbody = document.getElementById('transactionTableBody');
+        tbody.innerHTML = '';
+        document.getElementById('countTx').innerText = transactions.length;
+        let tP = 0, tTr = 0, tPg = 0, tPPN = 0, tPPh = 0;
+
+        if (transactions.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="11" style="text-align:center; padding:20px; color:#999;">Belum ada transaksi</td></tr>';
+        } else {
+            transactions.forEach((t, index) => {
+                // PERUBAHAN: Menggunakan t.nomorBukti
+                const netto = t.penerimaan - t.penarikan - t.pengeluaran - t.ppn - t.pph22;
+                tP += t.penerimaan; tTr += t.penarikan; tPg += t.pengeluaran; tPPN += t.ppn; tPPh += t.pph22;
+
+                tbody.innerHTML += `
+                    <tr>
+                        <td data-label="No" class="text-center">${index + 1}</td>
+                        <td data-label="Tanggal">${t.tanggal}</td>
+                        <td data-label="Uraian">${t.uraian}</td>
+                        <td data-label="No. Bukti">${t.nomorBukti || '-'}</td>
+                        <td data-label="Penerimaan" class="text-right">${formatRupiah(t.penerimaan)}</td>
+                        <td data-label="Penarikan" class="text-right">${formatRupiah(t.penarikan)}</td>
+                        <td data-label="Pengeluaran" class="text-right">${formatRupiah(t.pengeluaran)}</td>
+                        <td data-label="PPN" class="text-right">${formatRupiah(t.ppn)}</td>
+                        <td data-label="PPh 22" class="text-right">${formatRupiah(t.pph22)}</td>
+                        <td data-label="Netto" class="text-right" style="font-weight:bold; color: ${netto >= 0 ? 'green' : 'red'}">${formatRupiah(netto)}</td>
+                        <td data-label="Aksi" class="text-center"><button class="badge-aksi" onclick="deleteTransaction(${index})">🗑️ Hapus</button></td>
+                    </tr>
+                `;
+            });
+        }
+
+        const totalNetto = tP - tTr - tPg - tPPN - tPPh;
+        document.getElementById('totalPenerimaan').innerText = formatRupiah(tP);
+        document.getElementById('totalPenarikan').innerText = formatRupiah(tTr);
+        document.getElementById('totalPengeluaran').innerText = formatRupiah(tPg);
+        document.getElementById('totalPPN').innerText = formatRupiah(tPPN);
+        document.getElementById('totalPPh').innerText = formatRupiah(tPPh);
+        const totalNettoEl = document.getElementById('totalNetto');
+        totalNettoEl.innerText = formatRupiah(totalNetto);
+        totalNettoEl.style.color = totalNetto >= 0 ? 'green' : 'red';
+    }
+
+    function resetForm() {
+        document.getElementById('transactionForm').reset();
+        numericInputs.forEach(id => document.getElementById(id).value = '0');
+        calculateLiveNetto();
+    }
+
+    function exportExcel() {
+        let csv = "No,Tanggal,Uraian,No Bukti,Penerimaan,Penarikan,Pengeluaran,PPN,PPh22,Netto\n";
+        transactions.forEach((t, i) => {
+            const netto = t.penerimaan - t.penarikan - t.pengeluaran - t.ppn - t.pph22;
+            // PERUBAHAN: Menggunakan t.nomorBukti
+            csv += `${i+1},${t.tanggal},"${t.uraian}",${t.nomorBukti},${t.penerimaan},${t.penarikan},${t.pengeluaran},${t.ppn},${t.pph22},${netto}\n`;
+        });
+        const blob = new Blob([csv], { type: 'text/csv' });
+        const a = document.createElement('a');
+        a.href = window.URL.createObjectURL(blob);
+        a.download = `buku_keuangan_${new Date().toISOString().slice(0,10)}.csv`;
+        a.click();
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        document.getElementById('tanggal').valueAsDate = new Date();
+        loadData();
+    });
+</script>
+</body>
+</html>
